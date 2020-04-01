@@ -1,0 +1,287 @@
+# Default values for opa.
+# -----------------------
+#
+# The 'opa' key embeds an OPA configuration file. See
+# https://www.openpolicyagent.org/docs/configuration.html for more details.
+# Default value is no default config. For custom config, the opa key
+# needs to include the opa config yaml, eg:
+opa: false
+
+image: openpolicyagent/opa
+imageTag: 0.18.0
+imagePullPolicy: IfNotPresent
+
+mgmt:
+  enabled: true
+
+# Setup the webhook using cert-manager
+certManager:
+  enabled: false
+
+# Expose the prometheus scraping endpoint
+prometheus:
+  enabled: true
+
+bootstrapPolicies:
+  main: |-
+    package system
+
+    # info from https://github.com/teq0/opa-k8s-admission/blob/master/rego/core.rego
+
+    import data.admission
+
+    main = {
+      "apiVersion": "admission.k8s.io/v1beta1",
+      "kind": "AdmissionReview",
+      "response": response,
+    }
+
+    default response = {"allowed": true}
+
+    # non-patch response
+    response = x {
+      count(admission.deny) > 0
+      x := {
+        "allowed": false,
+        "status": {"reason": reason},
+      }
+      reason = concat(", ", admission.deny)
+      reason != ""
+    }
+
+    # patch response
+    response = x {
+      count(admission.patch) > 0
+      count(admission.deny) == 0
+
+      # if there are missing leaves e.g. trying to add a label to something that doesn't
+      # yet have any, we need to create the leaf nodes as well
+      fullPatches := ensure_parent_paths_exist(cast_array({xw | xw := admission.patch[_][_]}))
+
+      x := {
+        "allowed": true,
+        "patchType": "JSONPatch",
+        "patch": base64url.encode(json.marshal(fullPatches)),
+      }
+    }
+
+    # Given array of JSON patches create and prepend new patches that create missing paths.
+    #   CAUTION: Implementation only creates leaves.
+    ensure_parent_paths_exist(patches) = result {
+      paths := {p.path | p := patches[_]}
+      newpatches := {make_path(prefix_array) |
+        paths[path]
+        full_length := count(path)
+        path_array := split(path, "/")
+        last_element_length := count(path_array[minus(count(path_array), 1)])
+
+        # this assumes paths starts with '/'
+        prefix_path := substring(path, 1, (full_length - last_element_length) - 2)
+        trace(sprintf("[ensure_parent_paths_exist] prefix_path = %s", [prefix_path]))
+        prefix_array := split(prefix_path, "/")
+        not input_path_exists(prefix_array) with input as input.request.object
+      }
+
+      result := array.concat(cast_array(newpatches), patches)
+
+      trace(sprintf("[ensure_parent_paths_exist] paths = %s", [paths]))
+      trace(sprintf("[ensure_parent_paths_exist] newpatches = %s", [newpatches]))
+      trace(sprintf("[ensure_parent_paths_exist] result = %s", [result]))
+    }
+
+    # Create the JSON patch to ensure the @path_array exists
+    make_path(path_array) = result {
+      # Need a slice of the path_array with all but the last element.
+      #   No way to do that with arrays, but we can do it with strings.
+      path_str := concat("/", array.concat([""], path_array))
+      trace(sprintf("[make_path] path_array = %s", [path_array]))
+      trace(sprintf("[make_path] path_str = %s", [path_str]))
+
+      result = {
+        "op": "add",
+        "path": path_str,
+        "value": {},
+      }
+    }
+
+    # Check that the given @path exists as part of the input object.
+    input_path_exists(path) {
+      trace(sprintf("[input_path_exists] input = %s", [input]))
+      trace(sprintf("[input_path_exists] path = %s", [path]))
+      walk(input, [path, walkval])
+      trace(sprintf("[input_path_exists] walk = %s", [walkval]))
+      walk(input, [path, _])
+    }
+
+  functions: |-
+    package functions
+
+    runtime := opa.runtime()
+
+    get_env_var(name) = value {
+      value = runtime.env[name]
+    }
+
+    is_create_or_update { is_create }
+    is_create_or_update { is_update }
+    is_create { input.request.operation == "CREATE" }
+    is_update { input.request.operation == "UPDATE" }
+    hasLabels { input.metadata.labels }
+    hasLabel[label] {
+      hasLabels
+      input.metadata.labels[label]
+    }
+    hasLabelValue[[key, val]] {
+      hasLabels
+      input.metadata.labels[key] = val
+    }
+    hasAnnotations {
+      input.metadata.annotations
+    }
+    hasAnnotation[annotation] {
+      hasAnnotations
+      input.metadata.annotations[annotation]
+    }
+    hasAnnotationValue[[key, val]] {
+      hasAnnotations
+      input.metadata.annotations[key] = val
+    }
+
+  default_az: |-
+    package admission
+
+    import data.functions
+
+    deny[msg] {
+      functions.is_create_or_update
+      input.request.kind.kind = "ConfigMap"
+      input.request.name = "test"
+      msg = "You cannot name it test"
+    }
+
+    patch["default_az"] = mutation {
+      functions.is_create_or_update
+      input.request.kind.kind = "ConfigMap"
+      mutation := [
+        {"op": "add", "path": "/metadata/annotations/foo", "value": functions.get_env_var("TEST_ENV")},
+      ]
+    }
+
+# To enforce mutating policies, change to MutatingWebhookConfiguration.
+admissionControllerKind: MutatingWebhookConfiguration
+
+# To _fail closed_ on failures, change to Fail. During initial testing, we
+# recommend leaving the failure policy as Ignore.
+admissionControllerFailurePolicy: Ignore
+
+# Adds a namespace selector to the admission controller webhook
+admissionControllerNamespaceSelector:
+  matchExpressions:
+    - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
+
+# SideEffectClass for the webhook, setting to None enables dry-run
+admissionControllerSideEffect: Unknown
+
+# To restrict the kinds of operations and resources that are subject to OPA
+# policy checks, see the settings below. By default, all resources and
+# operations are subject to OPA policy checks.
+admissionControllerRules:
+  - operations: ["*"]
+    apiGroups: ["*"]
+    apiVersions: ["*"]
+    resources: ["configmaps"]
+
+# Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
+# always running for admission control is important
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+# maxUnavailable: 1
+
+# The helm Chart will automatically generate a CA and server certificate for
+# the OPA. If you want to supply your own certificates, set the field below to
+# false and add the PEM encoded CA certificate and server key pair below.
+#
+# WARNING: The common name name in the server certificate MUST match the
+# hostname of the service that exposes the OPA to the apiserver. For example.
+# if the service name is created in the "default" nanamespace with name "opa"
+# the common name MUST be set to "opa.default.svc".
+#
+# If the common name is not set correctly, the apiserver will refuse to
+# communicate with the OPA.
+generateAdmissionControllerCerts: true
+admissionControllerCA: ""
+admissionControllerCert: ""
+admissionControllerKey: ""
+
+# Number of OPA replicas to deploy. OPA maintains an eventually consistent
+# cache of policies and data. If you want high availability you can deploy two
+# or more replicas.
+replicas: 2
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: "app"
+          operator: In
+          values:
+          - opa
+      topologyKey: "kubernetes.io/hostname"
+tolerations:
+- key: "node-role.kubernetes.io/master"
+  effect: NoSchedule
+  operator: Exists
+
+# To control the CPU and memory resource limits and requests for OPA, set the
+# field below.
+resources: {}
+
+rbac:
+  # If true, create & use RBAC resources
+  #
+  create: true
+  rules:
+    cluster: []
+    # - apiGroups:
+    #     - ""
+    #   resources:
+    #   - namespaces
+    #   verbs:
+    #   - get
+    #   - list
+    #   - watch
+
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+  type: RollingUpdate
+
+
+# Log level for OPA ('debug', 'info', 'error') (app default=info)
+logLevel: debug
+
+# Log format for OPA ('text', 'json') (app default=text)
+logFormat: text
+
+authz:
+  # Disable if you don't want authorization.
+  # Mostly useful for debugging.
+  enabled: false
+
+readinessProbe:
+  httpGet:
+    path: /health
+    scheme: HTTPS
+    port: 443
+  initialDelaySeconds: 3
+  periodSeconds: 6
+livenessProbe:
+  httpGet:
+    path: /health
+    scheme: HTTPS
+    port: 443
+  initialDelaySeconds: 3
+  periodSeconds: 6
