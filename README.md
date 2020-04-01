@@ -21,7 +21,7 @@ You will need the OPA binary on your PATH
 ## Manual test rules
 ```
 $ kubectl create cm test2
-$ kubectl get cm test2 -o yaml
+$ kubectl get cm test_good -o yaml
 
 apiVersion: v1
 kind: ConfigMap
@@ -29,7 +29,7 @@ metadata:
   annotations:
     foo: hello
   creationTimestamp: "2020-04-01T14:15:39Z"
-  name: test2
+  name: test_good
   namespace: default
   resourceVersion: "36207"
   selfLink: /api/v1/namespaces/default/configmaps/test2
@@ -38,6 +38,6 @@ metadata:
 ```
 
 ```
-$ kubectl create cm test
+$ kubectl create cm test_bad
 Error from server (You cannot name it test): admission webhook "webhook.openpolicyagent.org" denied the request: You cannot name it test
 ```
