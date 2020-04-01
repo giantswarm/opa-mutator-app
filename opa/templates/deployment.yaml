@@ -63,12 +63,10 @@ spec:
             allow { input.identity == "$TOKEN" }
             EOF
 {{- end }}
-{{- range $policyName, $policy := .Values.bootstrapPolicies }}
-            cat > /bootstrap/{{ $policyName }}.rego <<EOF
-{{ $policy | indent 12 }}
-            EOF
-{{- end }}
+            cp /rules/*.rego /bootstrap
           volumeMounts:
+            - name: rules
+              mountPath: /rules
             - name: bootstrap
               mountPath: /bootstrap
 {{- end }}
@@ -190,6 +188,9 @@ spec:
 {{- if or .Values.authz.enabled .Values.bootstrapPolicies}}
         - name: bootstrap
           emptyDir: {}
+        - name: rules
+          configMap:
+            name: {{ template "opa.fullname" . }}-rules
 {{- end }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}

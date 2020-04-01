@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "opa.fullname" . }}-rules
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+data:
+{{ (.Files.Glob "rules/**.rego").AsConfig | indent 2 }}
