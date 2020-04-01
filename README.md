@@ -13,7 +13,7 @@ helm fetch --untar stable/opa
 helm install opa-mutate ./opa -f opa_values.yaml
 helm upgrade opa-mutate ./opa -f opa_values.yaml
 
-## Test rules
+## Manual test rules
 ```
 $ kubectl create cm test2
 $ kubectl get cm test2 -o yaml

@@ -11,7 +11,7 @@ keywords:
 maintainers:
 - email: torinsandall@gmail.com
   name: tsandall
-name: opa
+name: opa-app
 sources:
 - https://github.com/open-policy-agent/opa
 version: 1.13.4

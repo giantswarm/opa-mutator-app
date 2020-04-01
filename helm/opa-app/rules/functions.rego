@@ -1,11 +1,5 @@
 package functions
 
-runtime := opa.runtime()
-
-get_env_var(name) = value {
-    value = runtime.env[name]
-}
-
 is_create_or_update { is_create }
 
 is_create_or_update { is_update }
