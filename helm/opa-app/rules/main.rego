@@ -15,12 +15,13 @@ default response = {"allowed": true}
 # non-patch response
 response = x {
     count(admission.deny) > 0
+    reason = concat(", ", admission.deny)
+    reason != ""
+
     x := {
     "allowed": false,
     "status": {"reason": reason},
     }
-    reason = concat(", ", admission.deny)
-    reason != ""
 }
 
 # patch response
