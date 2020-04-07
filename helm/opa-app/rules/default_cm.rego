@@ -47,7 +47,7 @@ patchAZ["default_az"] = mutation {
     input.request.kind.kind = "AWSControlPlane"
     not input.request.spec.availabilityZones
     mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": slice(vars.validAZs, 0, vars.replicas-1)},
+        {"op": "add", "path": "/spec/availabilityZones", "value": slice(vars.defaultAZs, 0, vars.replicas-1)},
     ]
 }
 
