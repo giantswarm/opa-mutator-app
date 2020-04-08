@@ -11,6 +11,7 @@ jobs:
       OPA_VERSION: 1.18
     working_directory: ~/opa-mutator-app
     steps:
+      - checkout
       - run: ls -R .
       - run: apk add --update make jq
       - run: wget https://github.com/open-policy-agent/opa/releases/download/v0.18.0/opa_linux_amd64 -O /usr/local/bin/opa
