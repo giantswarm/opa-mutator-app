@@ -11,6 +11,6 @@ jobs:
       OPA_VERSION: 1.18
     steps:
       - run: apk add --update make jq
-      - run: sudo wget https://github.com/open-policy-agent/opa/releases/download/v0.18.0/opa_linux_amd64 -O /usr/local/bin/opa
+      - run: wget https://github.com/open-policy-agent/opa/releases/download/v0.18.0/opa_linux_amd64 -O /usr/local/bin/opa
       - run: make -s run_tests
       - run: make -s run_coverage
