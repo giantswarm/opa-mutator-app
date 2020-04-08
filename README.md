@@ -11,6 +11,7 @@ helm fetch --untar stable/opa
 
 ## Install local env
 `helm install opa-mutate ./opa -f opa_values.yaml`
+
 `helm upgrade opa-mutate ./opa -f opa_values.yaml`
 
 ## Unit tests
