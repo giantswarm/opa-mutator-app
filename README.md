@@ -18,6 +18,7 @@ helm fetch --untar stable/opa
 You will need the OPA binary on your PATH
 
 `$ make run_tests`
+`$ make run_coverage`
 
 ## Manual test rules
 ```
