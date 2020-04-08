@@ -103,3 +103,45 @@ create_valid_configmap = {
       }
    }
 }
+
+create_invalid_g8scontrolplane = {
+  "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+  "kind": "G8sControlPlane",
+  "metadata": {
+    "annotations": {
+      "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+    },
+    "creationTimestamp": null,
+    "name": "ier2s"
+  },
+  "spec": {
+    "infrastructureRef": {
+      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+      "kind": "AWSControlPlane",
+      "name": "ier2s",
+      "namespace": "default"
+    },
+    "replicas": 2
+  }
+}
+
+create_valid_g8scontrolplane = {
+  "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+  "kind": "G8sControlPlane",
+  "metadata": {
+    "annotations": {
+      "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+    },
+    "creationTimestamp": null,
+    "name": "ier2s"
+  },
+  "spec": {
+    "infrastructureRef": {
+      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+      "kind": "AWSControlPlane",
+      "name": "ier2s",
+      "namespace": "default"
+    },
+    "replicas":
+  }
+}

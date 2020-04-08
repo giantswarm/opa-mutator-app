@@ -16,7 +16,3 @@ validAZs := ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
 # we need to decide how exactly defaulting should work
 # (don't forget that defaultAZs can be > validAZs)
 defaultAZs := ["eu-central-1a", "eu-central-1b", "eu-central-1c"] 
-
-
-
-

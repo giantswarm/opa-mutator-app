@@ -23,3 +23,19 @@ test_create_invalid_configmap {
     contains(deny[_], "You cannot name it test_bad")
     count(deny) = 1
 }
+
+test_create_valid_g8scontrolplane {
+    deny = admission.denyReplicas with input as mocks.create_valid_g8scontrolplane
+    applied_patches = admission.patchReplicas with input as mocks.create_valid_g8scontrolplane
+
+    count(deny) = 0
+    count(applied_patches) = 1
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": \"1\"}")
+
+}
+
+test_create_invalid_g8scontrolplane {
+    deny = admission.denyReplicas with input as mocks.create_invalid_g8scontrolplane
+    contains(deny[_], "Invalid number of Master Node replicas")
+    count(deny) = 1
+}
