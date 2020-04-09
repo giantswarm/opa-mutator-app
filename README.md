@@ -9,36 +9,20 @@ helm fetch --untar stable/opa
               value: hello
 ```
 
-## Install local env
+## Manual installation steps
+First installation:
 `helm install opa-mutate ./opa -f opa_values.yaml`
 
+To upgrade rules and deployment:
 `helm upgrade opa-mutate ./opa -f opa_values.yaml`
 
-## Unit tests
-You will need the OPA binary on your PATH
+## Local unit testing
+This will not interact with any kubernetes service, it can run locally. You will need the OPA binary on your PATH, download from [repo](https://github.com/open-policy-agent/opa/releases).
+
+This command will run all tests
 
 `$ make run_tests`
 
-## Manual test rules
-```
-$ kubectl create cm test2
-$ kubectl get cm test_good -o yaml
+Coverage report will output coverage for files that contain `rules` string in it
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  annotations:
-    foo: hello
-  creationTimestamp: "2020-04-01T14:15:39Z"
-  name: test_good
-  namespace: default
-  resourceVersion: "36207"
-  selfLink: /api/v1/namespaces/default/configmaps/test2
-  uid: 208e763f-12b3-4356-accc-ea066850c8b1
-
-```
-
-```
-$ kubectl create cm test_bad
-Error from server (You cannot name it test): admission webhook "webhook.openpolicyagent.org" denied the request: You cannot name it test
-```
+`$ make run_coverage`
