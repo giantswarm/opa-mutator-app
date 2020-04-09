@@ -25,39 +25,39 @@ test_create_invalid_configmap {
 }
 
 test_create_valid_g8scontrolplane {
-    deny = admission.denyReplicas with input as mocks.create_valid_g8scontrolplane
-    applied_patches = admission.patchReplicas with input as mocks.create_valid_g8scontrolplane
+    denyReplicas = admission.denyReplicas with input as mocks.create_valid_g8scontrolplane
+    patchReplicas = admission.patchReplicas with input as mocks.create_valid_g8scontrolplane
 
-    count(deny) = 0
-    count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": \"1\"}")
+    count(denyReplicas) = 0
+    count(patchReplicas) = 1
+    contains(sprintf("%s",patchReplicas[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": \"1\"}")
 
 }
 
 test_create_invalid_g8scontrolplane {
-    deny = admission.denyReplicas with input as mocks.create_invalid_g8scontrolplane
-    contains(deny[_], "Invalid number of Master Node replicas")
-    count(deny) = 1
+    denyReplicas = admission.denyReplicas with input as mocks.create_invalid_g8scontrolplane
+    contains(denyReplicas[_], "Invalid number of Master Node replicas")
+    count(denyReplicas) = 1
 }
 
 test_create_valid_awscontrolplane {
-    deny = admission.denyAZ with input as mocks.create_valid_awscontrolplane
-    applied_patches = admission.patchAZ with input as mocks.create_valid_awscontrolplane
+    denyAZ = admission.denyAZ with input as mocks.create_valid_awscontrolplane
+    patchAZ = admission.patchAZ with input as mocks.create_valid_awscontrolplane
 
-    count(deny) = 0
-    count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": \"eu-central-1a\"}")
+    count(denyAZ) = 0
+    count(patchAZ) = 1
+    contains(sprintf("%s",patchAZ[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": \"eu-central-1a\"}")
 
 }
 
 test_create_invalid_g8scontrolplane {
-    deny = admission.denyAZ with input as mocks.create_invalid_awscontrolplane
-    contains(deny[_], "Invalid choice of Master Node Availability Zones")
-    count(deny) = 1
+    denyAZ = admission.denyAZ with input as mocks.create_invalid_awscontrolplane
+    contains(denyAZ[_], "Invalid choice of Master Node Availability Zones")
+    count(denyAZ) = 1
 }
 
 test_create_invalid_count_g8scontrolplane {
-    deny = admission.denyAZcount with input as mocks.create_invalid_count_awscontrolplane
-    contains(deny[_], "Length of list of chosen Availability Zones has to match the number of Master Node replicas")
-    count(deny) = 1
+    denyCount = admission.denyAZcount with input as mocks.create_invalid_count_awscontrolplane
+    contains(denyCount[_], "Length of list of chosen Availability Zones has to match the number of Master Node replicas")
+    count(denyCount) = 1
 }
