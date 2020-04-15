@@ -3,6 +3,7 @@ package admission
 import data.functions
 import data.vars
 
+# User has selected invalid availability zones
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
@@ -11,12 +12,23 @@ deny[msg] {
     msg = "Invalid choice of Master Node Availability Zones"
 }
 
+# User has selected a wrong number of AZ
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     is_array(input.request.object.spec.availabilityZones)
-    count(input.request.object.spec.availabilityZones) != vars.replicas
-    msg = "Length of list of chosen Availability Zones has to match the number of Master Node replicas"
+    not functions.array_contains(vars.validReplicas, count(input.request.object.spec.availabilityZones))
+    msg = "Invalid number of Availability Zones"
+}
+
+# User has selected different number of AZ than the Control Plane
+deny[msg] {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    input.request.name = data.kubernetes.g8scontrolplanes[n].metadata.name
+
+    data.kubernetes.g8scontrolplanes[n].spec.replicas != count(input.request.object.spec.availabilityZones)
+    msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
 
 patch["default_az"] = mutation {
@@ -24,6 +36,6 @@ patch["default_az"] = mutation {
     input.request.kind.kind = "AWSControlPlane"
     is_null(input.request.object.spec.availabilityZones)
     mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": vars.defaultAZs},
+        {"op": "add", "path": "/spec/availabilityZones", "value": array.slice(vars.validAZs, 0, 1)},
     ]
 }

@@ -48,17 +48,34 @@ test_create_invalid_awscontrolplane {
 
 test_create_invalid_count_awscontrolplane {
     deny = admission.deny with input as mocks.create_invalid_count_awscontrolplane
-    contains(deny[_], "Length of list of chosen Availability Zones has to match the number of Master Node replicas")
+    contains(deny[_], "Invalid number of Availability Zones")
     count(deny) = 1
 }
 
-
 test_create_valid_awscontrolplane {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_single
+    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_single
 
     count(deny) = 0
     count(applied_patches) = 1
-    #contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": \"eu-central-1a\"}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1a\"]}")
+}
 
+test_create_valid_awscontrolplane_checkg8ssi {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_single with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
+
+    count(deny) = 0
+}
+
+test_create_valid_awscontrolplane_checkg8sha {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_ha with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
+
+    count(deny) = 0
+}
+
+test_create_valid_awscontrolplane_checkg8shafail {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_ha with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes_fail
+
+    contains(deny[_], "Number of Availability Zones different than defined in G8SControlPlane")
+    count(deny) = 1
 }

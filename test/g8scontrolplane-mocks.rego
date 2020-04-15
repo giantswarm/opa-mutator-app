@@ -1,5 +1,71 @@
 package mocks
 
+mocked_g8scontrolplanes = {
+  "sicp1": {
+      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+      "kind": "G8sControlPlane",
+      "metadata": {
+         "annotations": {
+            "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+         },
+         "creationTimestamp": null,
+         "name": "sicp1"
+      },
+      "spec": {
+         "infrastructureRef": {
+            "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+            "kind": "AWSControlPlane",
+            "name": "sicp1",
+            "namespace": "default"
+         },
+         "replicas": 1,
+      }
+   },
+   "hacp1": {
+      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+      "kind": "G8sControlPlane",
+      "metadata": {
+         "annotations": {
+            "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+         },
+         "creationTimestamp": null,
+         "name": "hacp1"
+      },
+      "spec": {
+         "infrastructureRef": {
+            "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+            "kind": "AWSControlPlane",
+            "name": "hacp1",
+            "namespace": "default"
+         },
+         "replicas": 3,
+      }
+   }
+}
+
+mocked_g8scontrolplanes_fail = {
+   "hacp1": {
+      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+      "kind": "G8sControlPlane",
+      "metadata": {
+         "annotations": {
+            "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+         },
+         "creationTimestamp": null,
+         "name": "hacp1"
+      },
+      "spec": {
+         "infrastructureRef": {
+            "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+            "kind": "AWSControlPlane",
+            "name": "hacp1",
+            "namespace": "default"
+         },
+         "replicas": 1,
+      }
+   }
+}
+
 create_invalid_g8scontrolplane = {
    "kind":"AdmissionReview",
    "apiVersion":"admission.k8s.io/v1beta1",
