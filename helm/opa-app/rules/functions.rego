@@ -34,6 +34,12 @@ hasAnnotationValue[[key, val]] {
     input.metadata.annotations[key] = val
 }
 
+array_not_subset(array_a, array_b) {
+  intersect := cast_set(array_a) & cast_set(array_b)
+  complement := cast_set(array_b) - intersect
+  count(complement) != 0
+}
+
 array_contains(array, elem) {
   array[_] = elem
 }

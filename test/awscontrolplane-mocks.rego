@@ -47,7 +47,9 @@ create_invalid_awscontrolplane = {
         },
         "spec": {
           "availabilityZones": [
-            "bad-name"
+            "bad-name",
+            "eu-central-1a",
+            "eu-central-1b"
           ],
           "instanceType": "m4.xlarge"
         }
