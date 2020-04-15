@@ -3,18 +3,18 @@ package admission
 import data.functions
 import data.vars
 
-denyReplicas[msg] {
+deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
-    input.request.spec.replicas
-    not vars.validReplicas[input.request.spec.replicas]
+    is_number(input.request.object.spec.replicas)
+    not functions.array_contains(vars.validReplicas, input.request.object.spec.replicas)
     msg = "Invalid number of Master Node replicas"
 }
 
-patchReplicas["default_replicas"] = mutation {
+patch["default_replicas"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
-    not input.request.spec.replicas
+    is_null(input.request.object.spec.replicas)
     mutation := [
         {"op": "add", "path": "/spec/replicas", "value": vars.defaultReplicas},
     ]

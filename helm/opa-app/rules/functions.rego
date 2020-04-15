@@ -33,3 +33,7 @@ hasAnnotationValue[[key, val]] {
     hasAnnotations
     input.metadata.annotations[key] = val
 }
+
+array_contains(array, elem) {
+  array[_] = elem
+}
