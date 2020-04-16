@@ -31,6 +31,7 @@ deny[msg] {
     msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
 
+# Defaulting: user has not selected any AZs and there is no g8scontrolplane that has to be matched
 patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
@@ -41,6 +42,7 @@ patch["default_az"] = mutation {
     ]
 }
 
+# Defaulting: User has not selected any AZs but there is a g8scontrolplane that has to be matched
 patch["default_az_withg8s"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
