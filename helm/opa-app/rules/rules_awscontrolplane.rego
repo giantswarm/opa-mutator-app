@@ -50,3 +50,13 @@ patch["default_az_withg8s"] = mutation {
         {"op": "add", "path": "/spec/availabilityZones", "value": array.slice(vars.validAZs, 0, data.kubernetes.g8scontrolplanes[n].spec.replicas)},
     ]
 }
+
+patch["default_cidr"] = mutation {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
+    is_null(input.request.object.spec.provider.cni)
+    mutation := [
+        {"op": "add", "path": "/spec/provider/cni", "value": {"cidr": vars.defaultCIDR, "subnet": vars.defaultSubnet}},
+    ]
+}

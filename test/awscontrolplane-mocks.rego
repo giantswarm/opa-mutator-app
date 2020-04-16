@@ -421,3 +421,86 @@ create_valid_awscontrolplane_ha = {
       }
    }
 }
+
+create_valid_awscontrolplane_nullcni = {
+   "kind":"AdmissionReview",
+   "apiVersion":"admission.k8s.io/v1beta1",
+   "request":{
+      "uid":"d06e33d2-d618-4787-8a68-2b005f063169",
+      "kind":{
+         "group":"",
+         "version":"v1alpha2",
+         "kind":"AWSControlPlane"
+      },
+      "resource":{
+         "group":"",
+         "version":"v1alpha2",
+         "resource":"infrastructure.giantswarm.io"
+      },
+      "requestKind":{
+         "group":"",
+         "version":"v1alpha2",
+         "kind":"AWSControlPlane"
+      },
+      "requestResource":{
+         "group":"",
+         "version":"v1alpha2",
+         "resource":"infrastructure.giantswarm.io"
+      },
+      "name":"test_bad",
+      "namespace":"default",
+      "operation":"CREATE",
+      "userInfo":{
+         "username":"kubernetes-admin",
+         "groups":[
+            "system:masters",
+            "system:authenticated"
+         ]
+      },
+      "object":{
+         "apiVersion": "infrastructure.giantswarm.io/v1",
+         "kind": "AWSCluster",
+         "metadata": {
+            "annotations": {
+               "giantswarm.io/docs": "https://pkg.go.dev/github.com/giantswarm/apiextensions/pkg/apis/infrastructure/v1alpha2?tab=doc#AWSCluster"
+            },
+            "creationTimestamp": null,
+            "name": "g8kw3"
+         },
+         "spec": {
+            "cluster": {
+               "description": "Dev cluster",
+               "dns": {
+               "domain": "g8s.example.com"
+               },
+               "oidc": {
+               "claims": {
+                  "groups": "groups-field",
+                  "username": "username-field"
+               },
+               "clientID": "some-example-client-id",
+               "issuerURL": "https://idp.example.com/"
+               }
+            },
+            "provider": {
+               "cni": null,
+               "credentialSecret": {
+               "name": "example-credential",
+               "namespace": "example-namespace"
+               },
+               "master": {
+               "availabilityZone": "eu-central-1b",
+               "instanceType": "m5.2xlarge"
+               },
+               "region": "eu-central-1"
+            }
+         }
+      },
+      "oldObject":null,
+      "dryRun":false,
+      "options":{
+         "kind":"CreateOptions",
+         "apiVersion":"meta.k8s.io/v1"
+      }
+   }
+}
