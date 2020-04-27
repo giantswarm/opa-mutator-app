@@ -1,6 +1,6 @@
 
 ## Render templates local
-helm template helm/opa-app -f opa_values.yaml
+helm template helm/opa-mutator-app -f opa_values.yaml
 
 ## Added env var to opa container
 ```
