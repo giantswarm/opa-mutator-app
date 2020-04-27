@@ -78,7 +78,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
-            - name: VALID_AZS
+            - name: AWS_VALID_AZS
               value: {{ join "," .Values.Installation.Provider.AWS.AvailabilityZones }}
           args:
             - "run"
