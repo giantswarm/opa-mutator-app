@@ -22,25 +22,36 @@ jobs:
       - run: make -s run_coverage
 
 workflows:
-  jobs:
-    -build
+  version: 2
+  build:
+    jobs:
+      -build:
+        filters:
+          tags:
+            only: /^v.*/
 
-    - architect/push-to-app-catalog:
-        name: push-opa-mutator-app-to-control-plane-app-catalog
-        app_catalog: "control-plane-catalog"
-        app_catalog_test: "control-plane-test-catalog"
-        chart: "opa-mutator-app"
-        filters:
-          tags:
-            only: /^v.*/
-    - architect/push-to-app-collection:
-        name: push-opa-mutator-app-to-aws-app-collection
-        app_name: "opa-mutator-app"
-        app_collection_repo: "aws-app-collection"
-        requires:
-          - push-opa-mutator-app-to-control-plane-app-catalog
-        filters:
-          branches:
-            ignore: /.*/
-          tags:
-            only: /^v.*/
+      - architect/push-to-app-catalog:
+          context: architect
+          name: push-opa-mutator-app-to-control-plane-app-catalog
+          app_catalog: "control-plane-catalog"
+          app_catalog_test: "control-plane-test-catalog"
+          chart: "opa-mutator-app"
+          requires:
+          - build
+          filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-opa-mutator-app-to-aws-app-collection
+          app_name: "opa-mutator-app"
+          app_collection_repo: "aws-app-collection"
+          requires:
+            - push-opa-mutator-app-to-control-plane-app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+  
