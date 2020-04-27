@@ -80,6 +80,11 @@ spec:
           env:
             - name: TEST_ENV
               value: hello
+            - name: VALID_AZS
+              valueFrom:
+                configMapKeyRef:
+                  name: draughtsman-values-configmap
+                  key: AvailabilityZones
           args:
             - "run"
             - "--server"
