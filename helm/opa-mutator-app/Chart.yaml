@@ -14,4 +14,4 @@ maintainers:
 name: opa-mutator-app
 sources:
 - https://github.com/open-policy-agent/opa
-version: 1.13.4
+version: "[[ .Version ]]"
