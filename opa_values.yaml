@@ -142,3 +142,11 @@ livenessProbe:
     port: 443
   initialDelaySeconds: 3
   periodSeconds: 6
+
+Installation:
+  Provider:
+    AWS:
+      AvailabilityZones:
+        - eu-central-1a
+        - eu-central-1b
+        - eu-central-1c

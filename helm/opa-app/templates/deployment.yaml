@@ -78,13 +78,8 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
-            - name: TEST_ENV
-              value: hello
             - name: VALID_AZS
-              valueFrom:
-                configMapKeyRef:
-                  name: draughtsman-values-configmap
-                  key: AvailabilityZones
+              value: {{ join "," .Values.Installation.Provider.AWS.AvailabilityZones }}
           args:
             - "run"
             - "--server"
