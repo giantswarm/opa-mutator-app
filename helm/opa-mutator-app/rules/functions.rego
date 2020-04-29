@@ -43,3 +43,8 @@ array_not_subset(array_a, array_b) {
 array_contains(array, elem) {
   array[_] = elem
 }
+
+array_not_unique(array) {
+  array[i] == array[j]
+  i != j
+}

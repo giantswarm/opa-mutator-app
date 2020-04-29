@@ -12,6 +12,15 @@ deny[msg] {
     msg = "Invalid choice of Master Node Availability Zones"
 }
 
+# User has selected the same availability zone twice
+deny[msg] {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    is_array(input.request.object.spec.availabilityZones)
+    functions.array_not_unique(input.request.object.spec.availabilityZones)
+    msg = "The same Master Node Availability Zone can not be selected more than once"
+}
+
 # User has selected a wrong number of AZ
 deny[msg] {
     functions.is_create_or_update
