@@ -68,6 +68,6 @@ patch["default_cidr"] = mutation {
     input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
     is_null(input.request.object.spec.provider.cni)
     mutation := [
-        {"op": "add", "path": "/spec/provider/cni", "value": {"cidr": vars.defaultCIDR, "subnet": vars.defaultSubnet}},
+        {"op": "add", "path": "/spec/provider/cni", "value": {"cidrBlock":  sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) }},
     ]
 }
