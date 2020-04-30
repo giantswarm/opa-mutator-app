@@ -15,6 +15,6 @@
       "name": "ier2s",
       "namespace": "default"
     },
-    "replicas": 1
+    "replicas": null
   }
 }

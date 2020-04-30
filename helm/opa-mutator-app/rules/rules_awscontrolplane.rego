@@ -47,7 +47,7 @@ patch["default_az"] = mutation {
     is_null(input.request.object.spec.availabilityZones)
     not data.kubernetes.g8scontrolplanes[input.request.namespace][input.request.name]
     mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": array.slice(vars.validAZs, 0, vars.defaultReplicas)},
+        {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, vars.defaultReplicas)},
     ]
 }
 
@@ -58,7 +58,7 @@ patch["default_az_withg8s"] = mutation {
     input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
     is_null(input.request.object.spec.availabilityZones)
     mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": array.slice(vars.validAZs, 0, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
+        {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
     ]
 }
 

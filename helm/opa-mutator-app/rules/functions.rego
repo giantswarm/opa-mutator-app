@@ -53,3 +53,12 @@ random_number(max) = num {
   current_time := time.now_ns()
   num = current_time % max
 }
+
+n_shifted_values(array_in, n) = array_out {
+ start := random_number(count(array_in))
+ end := count(array_in)
+ array_a := array.slice(array_in, start, end)
+ array_b := array.slice(array_in, 0, start)
+ shifted := array.concat(array_a, array_b)
+ array_out := array.slice(shifted, 0, n)
+}
