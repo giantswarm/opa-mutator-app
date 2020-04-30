@@ -1,60 +1,67 @@
 package mocks
 
 mocked_awscontrolplanes = {
-  "sicp1": {
-      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
-      "kind": "AWSControlPlane",
-      "metadata": {
-        "annotations": {
-            "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+   "default": {
+      "sicp1": {
+            "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+            "kind": "AWSControlPlane",
+            "metadata": {
+               "annotations": {
+                     "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+                  },
+               "creationTimestamp": null,
+               "name": "sicp1",
+               "namespace": "default"
+            },
+            "spec": {
+               "availabilityZones": [
+                  "eu-central-1a",
+               ],
+               "instanceType": "m4.xlarge"
+            }
          },
-         "creationTimestamp": null,
-            "name": "sicp1"
-      },
-      "spec": {
-         "availabilityZones": [
-            "eu-central-1a",
-         ],
-         "instanceType": "m4.xlarge"
-      }
-   },
-   "hacp1": {
-      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
-      "kind": "AWSControlPlane",
-      "metadata": {
-        "annotations": {
-            "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
-         },
-         "creationTimestamp": null,
-         "name": "hacp1",
-      },
-      "spec": {
-         "availabilityZones": [
-            "eu-central-1a",
-            "eu-central-1b",
-            "eu-central-1c"
-         ],
-         "instanceType": "m4.xlarge"
-      }
+         "hacp1": {
+            "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+            "kind": "AWSControlPlane",
+            "metadata": {
+            "annotations": {
+                  "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+               },
+               "creationTimestamp": null,
+               "name": "hacp1",
+               "namespace": "default"
+            },
+            "spec": {
+               "availabilityZones": [
+                  "eu-central-1a",
+                  "eu-central-1b",
+                  "eu-central-1c"
+               ],
+               "instanceType": "m4.xlarge"
+            }
+         }
    }
 }
 
 mocked_awscontrolplanes_fail = {
-   "hacp1": {
-      "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
-      "kind": "AWSControlPlane",
-      "metadata": {
-        "annotations": {
-            "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+   "default": {
+      "hacp1": {
+         "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+         "kind": "AWSControlPlane",
+         "metadata": {
+         "annotations": {
+               "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+            },
+            "creationTimestamp": null,
+            "name": "hacp1",
+            "namespace": "default"
          },
-         "creationTimestamp": null,
-         "name": "hacp1",
-      },
-      "spec": {
-         "availabilityZones": [
-            "eu-central-1a",
-         ],
-         "instanceType": "m4.xlarge"
+         "spec": {
+            "availabilityZones": [
+               "eu-central-1a",
+            ],
+            "instanceType": "m4.xlarge"
+         }
       }
    }
 }

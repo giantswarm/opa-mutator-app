@@ -34,9 +34,9 @@ deny[msg] {
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    input.request.name = data.kubernetes.g8scontrolplanes[n].metadata.name
+    input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
     not is_null(input.request.object.spec.availabilityZones)
-    data.kubernetes.g8scontrolplanes[n].spec.replicas != count(input.request.object.spec.availabilityZones)
+    data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas != count(input.request.object.spec.availabilityZones)
     msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
 
@@ -45,7 +45,7 @@ patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     is_null(input.request.object.spec.availabilityZones)
-    not data.kubernetes.g8scontrolplanes[input.request.name]
+    not data.kubernetes.g8scontrolplanes[input.request.namespace][input.request.name]
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": array.slice(vars.validAZs, 0, vars.defaultReplicas)},
     ]
@@ -55,10 +55,10 @@ patch["default_az"] = mutation {
 patch["default_az_withg8s"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    input.request.name = data.kubernetes.g8scontrolplanes[n].metadata.name
+    input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
     is_null(input.request.object.spec.availabilityZones)
     mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": array.slice(vars.validAZs, 0, data.kubernetes.g8scontrolplanes[n].spec.replicas)},
+        {"op": "add", "path": "/spec/availabilityZones", "value": array.slice(vars.validAZs, 0, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
     ]
 }
 
