@@ -12,6 +12,15 @@ deny[msg] {
     msg = "Invalid choice of Master Node Availability Zones"
 }
 
+# User has selected the same availability zone twice
+deny[msg] {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    is_array(input.request.object.spec.availabilityZones)
+    functions.array_not_unique(input.request.object.spec.availabilityZones)
+    msg = "The same Master Node Availability Zone can not be selected more than once"
+}
+
 # User has selected a wrong number of AZ
 deny[msg] {
     functions.is_create_or_update
@@ -31,6 +40,7 @@ deny[msg] {
     msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
 
+# Defaulting: user has not selected any AZs and there is no g8scontrolplane that has to be matched
 patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
@@ -41,6 +51,7 @@ patch["default_az"] = mutation {
     ]
 }
 
+# Defaulting: User has not selected any AZs but there is a g8scontrolplane that has to be matched
 patch["default_az_withg8s"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"

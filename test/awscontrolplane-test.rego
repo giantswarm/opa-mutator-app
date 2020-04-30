@@ -11,6 +11,13 @@ test_create_invalid_awscontrolplane {
     count(deny) = 1
 }
 
+# a selection of AZs containing a duplicate
+test_create_duplicate_awscontrolplane {
+    deny = admission.deny with input as mocks.create_duplicate_awscontrolplane
+    contains(deny[_], "The same Master Node Availability Zone can not be selected more than once")
+    count(deny) = 1
+}
+
 # a non valid number of AZs
 test_create_invalid_count_awscontrolplane {
     deny = admission.deny with input as mocks.create_invalid_count_awscontrolplane

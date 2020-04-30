@@ -1,6 +1,6 @@
 copy_folders:
 	mkdir -p ./test_tmp
-	cp helm/opa-app/rules/* ./test_tmp/
+	cp helm/opa-mutator-app/rules/* ./test_tmp/
 	cp test/* ./test_tmp/
 
 run_tests : copy_folders

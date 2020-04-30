@@ -24,7 +24,7 @@ test_create_valid_g8scontrolplanesinglenull {
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 1}")
 }
 
-# defaulting the replicas when the awscontrolplane already exists and with multiple AZ
+# defaulting the replicas when the awscontrolplane already exists with multiple AZ
 test_create_valid_g8scontrolplanehanull {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_hanull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
     applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_hanull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
@@ -34,7 +34,7 @@ test_create_valid_g8scontrolplanehanull {
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 3}")
 }
 
-# A valid number of replicas defined (checked against vars.validReplicas)
+# A valid number of replicas is defined (checked against vars.validReplicas)
 test_create_valid_g8scontrolplane {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_single
     applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_single
@@ -43,7 +43,7 @@ test_create_valid_g8scontrolplane {
     count(applied_patches) = 0
 }
 
-# A non valid number of replicas defined (checked against vars.validReplicas)
+# A non valid number of replicas is defined (checked against vars.validReplicas)
 test_create_invalid_g8scontrolplane {
     deny = admission.deny with input as mocks.create_invalid_g8scontrolplane
 
@@ -60,7 +60,7 @@ test_create_valid_g8scontrolplane_checkawssi {
     count(applied_patches) = 0
 }
 
-# Check valid HA G8SControlPlane against existing AWSControlplane
+# Check valid HA G8SControlPlane against existing AWSControlplane with defaulting
 test_create_valid_g8scontrolplane_checkawssinull {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_singlenull with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
     applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_singlenull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes

@@ -240,3 +240,11 @@ deploymentStrategy: {}
   #   maxSurge: 1
   #   maxUnavailable: 0
   # type: RollingUpdate
+
+Installation:
+  Provider:
+    AWS:
+      AvailabilityZones:
+        - eu-central-1a
+        - eu-central-1b
+        - eu-central-1c

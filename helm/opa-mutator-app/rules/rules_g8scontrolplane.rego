@@ -3,6 +3,7 @@ package admission
 import data.functions
 import data.vars
 
+# User has selected a wrong number of replicas
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
@@ -11,6 +12,7 @@ deny[msg] {
     msg = "Invalid number of Master Node replicas"
 }
 
+# User has selected different number of AZ than the Control Plane
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
@@ -20,6 +22,7 @@ deny[msg] {
     msg = "Number of Availability Zones different than defined in AWSControlPlane"
 }
 
+# Defaulting: user has not selected any AZs and there is no awscontrolplane that has to be matched
 patch["default_replicas"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
@@ -30,6 +33,7 @@ patch["default_replicas"] = mutation {
     ]
 }
 
+# Defaulting: User has not selected any AZs but there is a awscontrolplane that has to be matched
 patch["default_replicas_withaws"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
