@@ -81,7 +81,7 @@ spec:
             - name: AWS_VALID_AZS
               value: {{ join "," .Values.Installation.Provider.AWS.AvailabilityZones }}
             - name: AWS_POD_CIDR
-              value: {{ .Values.Installation.V1.Guest.Calico.CIDR }}
+              value: "{{ .Values.Installation.V1.Guest.Calico.CIDR }}"
             - name: AWS_POD_SUBNET
               value: {{ .Values.Installation.V1.Guest.Calico.Subnet }}
           args:
