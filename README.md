@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/giantswarm/opa-mutator-app.svg?style=svg)](https://circleci.com/gh/giantswarm/opa-mutator-app)
 
 ## Render templates local
 helm template helm/opa-mutator-app -f opa_values.yaml
