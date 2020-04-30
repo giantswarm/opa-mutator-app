@@ -48,3 +48,8 @@ array_not_unique(array) {
   array[i] == array[j]
   i != j
 }
+
+random_number(max) = num {
+  current_time := time.now_ns()
+  num = current_time % max
+}
