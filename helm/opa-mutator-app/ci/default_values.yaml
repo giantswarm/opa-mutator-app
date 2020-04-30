@@ -1,0 +1,13 @@
+---
+Installation:
+  V1:
+    Guest:
+      Calico:
+        CIDR: '16'
+        Subnet: '10.3.0.0'
+  Provider:
+    AWS:
+      AvailabilityZones:
+        - eu-central-1a
+        - eu-central-1b
+        - eu-central-1c

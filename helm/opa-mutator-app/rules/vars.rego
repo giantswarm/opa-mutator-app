@@ -15,5 +15,5 @@ validAZs = AZs {
 }
 
 # default number of master nodes
-defaultCIDR := "16"
-defaultSubnet := "10.2.0.0"
+defaultCIDR :=  functions.get_env_var("AWS_POD_CIDR")
+defaultSubnet :=  functions.get_env_var("AWS_POD_SUBNET")
