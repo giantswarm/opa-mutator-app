@@ -107,6 +107,8 @@ mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
   imageTag: "0.11"
+  configmapPolicies:
+    enabled: false
   data:
     enabled: true
   replicate:
