@@ -30,7 +30,7 @@ patch["default_replicas"] = mutation {
     is_null(input.request.object.spec.replicas)
     not data.kubernetes.awscontrolplanes[input.request.namespace][input.request.name]
     mutation := [
-        {"op": "add", "path": "spec/replicas", "value": vars.defaultReplicas},
+        {"op": "add", "path": "spec~1replicas", "value": vars.defaultReplicas},
     ]
 }
 
@@ -41,6 +41,6 @@ patch["default_replicas_withaws"] = mutation {
     input.request.name = data.kubernetes.awscontrolplanes[input.request.namespace][n].metadata.name
     is_null(input.request.object.spec.replicas)
     mutation := [
-        {"op": "add", "path": "spec/replicas", "value": count(data.kubernetes.awscontrolplanes[input.request.namespace][n].spec.availabilityZones)},
+        {"op": "add", "path": "spec~1replicas", "value": count(data.kubernetes.awscontrolplanes[input.request.namespace][n].spec.availabilityZones)},
     ]
 }

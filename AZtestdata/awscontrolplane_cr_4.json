@@ -9,7 +9,6 @@
     "name": "ier2s"
   },
   "spec": {
-    "availabilityZones": null,
     "instanceType": "m4.xlarge"
   }
 }

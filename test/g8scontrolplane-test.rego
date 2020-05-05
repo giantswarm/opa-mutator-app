@@ -11,7 +11,7 @@ test_create_valid_g8scontrolplanenull {
 
     count(deny) = 0
     count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec/replicas\", \"value\": 1}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec~1replicas\", \"value\": 1}")
 }
 
 # defaulting the replicas when the awscontrolplane already exists with single AZ
@@ -21,7 +21,7 @@ test_create_valid_g8scontrolplanesinglenull {
 
     count(deny) = 0
     count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec/replicas\", \"value\": 1}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec~1replicas\", \"value\": 1}")
 }
 
 # defaulting the replicas when the awscontrolplane already exists with multiple AZ
@@ -31,7 +31,7 @@ test_create_valid_g8scontrolplanehanull {
 
     count(deny) = 0
     count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec/replicas\", \"value\": 3}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec~1replicas\", \"value\": 3}")
 }
 
 # A valid number of replicas is defined (checked against vars.validReplicas)
@@ -67,7 +67,7 @@ test_create_valid_g8scontrolplane_checkawssinull {
 
     count(deny) = 0
     count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec/replicas\", \"value\": 1}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"spec~1replicas\", \"value\": 1}")
 }
 
 # Check HA G8SControlPlane against existing AWSControlplane
