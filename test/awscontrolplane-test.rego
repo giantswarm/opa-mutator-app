@@ -94,5 +94,5 @@ test_create_valid_awscontrolplane_setcidr {
 
     count(deny) = 0
     count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec~1provider~1cni\", \"value\": {\"cidrBlock\": \"10.2.0.0/16\"}}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider~1cni\", \"value\": {\"cidrBlock\": \"10.2.0.0/16\"}}")
 }
