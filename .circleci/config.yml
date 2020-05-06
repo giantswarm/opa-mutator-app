@@ -1,5 +1,9 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+
+orbs:
+  architect: giantswarm/architect@0.8.13
+
 # Use a package of configuration called an orb.
 jobs:
   build:
@@ -16,3 +20,38 @@ jobs:
       - run: wget https://github.com/open-policy-agent/opa/releases/download/$OPA_VERSION/opa_linux_amd64 -O /usr/local/bin/opa && chmod +x /usr/local/bin/opa
       - run: make -s run_tests
       - run: make -s run_coverage
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+        filters:
+          tags:
+            only: /^v.*/
+
+      - architect/push-to-app-catalog:
+          context: architect
+          name: push-opa-mutator-app-to-control-plane-app-catalog
+          app_catalog: "control-plane-catalog"
+          app_catalog_test: "control-plane-test-catalog"
+          chart: "opa-mutator-app"
+          requires:
+          - build
+          filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-opa-mutator-app-to-aws-app-collection
+          app_name: "opa-mutator-app"
+          app_collection_repo: "aws-app-collection"
+          requires:
+            - push-opa-mutator-app-to-control-plane-app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+  

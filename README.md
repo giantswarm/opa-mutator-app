@@ -1,6 +1,7 @@
+[![CircleCI](https://circleci.com/gh/giantswarm/opa-mutator-app.svg?style=svg)](https://circleci.com/gh/giantswarm/opa-mutator-app)
 
-## Download OPA chart
-helm fetch --untar stable/opa
+## Render templates local
+helm template helm/opa-mutator-app -f opa_values.yaml
 
 ## Added env var to opa container
 ```

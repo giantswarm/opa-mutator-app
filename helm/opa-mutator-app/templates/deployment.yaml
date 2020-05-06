@@ -78,8 +78,12 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
-            - name: TEST_ENV
-              value: hello
+            - name: AWS_VALID_AZS
+              value: {{ join "," .Values.Installation.Provider.AWS.AvailabilityZones }}
+            - name: AWS_POD_CIDR
+              value: "{{ .Values.Installation.V1.Guest.Calico.CIDR }}"
+            - name: AWS_POD_SUBNET
+              value: {{ .Values.Installation.V1.Guest.Calico.Subnet }}
           args:
             - "run"
             - "--server"

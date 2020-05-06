@@ -36,7 +36,7 @@ response = x {
     x := {
     "allowed": true,
     "patchType": "JSONPatch",
-    "patch": base64url.encode(json.marshal(fullPatches)),
+    "patch": base64.encode(json.marshal(fullPatches)),
     }
 }
 
