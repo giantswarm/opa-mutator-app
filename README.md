@@ -75,3 +75,32 @@ patch["default_replicas"] = mutation {
     ]
 }
 ```
+## Adding unit tests for rego rules
+To make sure the rules work as desired, we can add unit tests.
+
+To test the `deny` from above:
+```
+test_create_invalid_awscontrolplane {
+    # add a mock input that includes the attribute that should be denied by the rule
+    deny = admission.deny with input as mocks.create_invalid_awscontrolplane
+
+    # if the rule was applied, the error message should appear and one deny should be counted
+    contains(deny[_], "Invalid choice of Master Node Availability Zones")
+    count(deny) = 1
+}
+```
+
+To test the `patch` from above:
+```
+test_create_valid_g8scontrolplanenull {
+    # add a mock input that includes the attribute that should be patched by the rule.
+    deny = admission.deny with input as mocks.create_valid_g8scontrolplane_singlenull
+    applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_singlenull
+
+    # if the rule was applied, the default value should appear and one patch 
+    # as well as no deny should be counted
+    count(deny) = 0
+    count(applied_patches) = 1
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 1}")
+}
+```
