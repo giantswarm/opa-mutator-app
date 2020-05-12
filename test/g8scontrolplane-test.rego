@@ -11,7 +11,7 @@ test_create_valid_g8scontrolplanenull {
 
     count(deny) = 0
     count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 1}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 3}")
 }
 
 # Defaulting the replicas when the awscontrolplane already exists with single AZ
