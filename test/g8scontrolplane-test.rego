@@ -4,7 +4,7 @@ import data.admission
 import data.functions
 import data.mocks
 
-# defaulting the replicas if they are null
+# Defaulting the replicas if they are null
 test_create_valid_g8scontrolplanenull {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_singlenull
     applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_singlenull
@@ -14,7 +14,7 @@ test_create_valid_g8scontrolplanenull {
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 1}")
 }
 
-# defaulting the replicas when the awscontrolplane already exists with single AZ
+# Defaulting the replicas when the awscontrolplane already exists with single AZ
 test_create_valid_g8scontrolplanesinglenull {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_singlenull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
     applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_singlenull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
@@ -24,7 +24,7 @@ test_create_valid_g8scontrolplanesinglenull {
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 1}")
 }
 
-# defaulting the replicas when the awscontrolplane already exists with multiple AZ
+# Defaulting the replicas when the awscontrolplane already exists with multiple AZ
 test_create_valid_g8scontrolplanehanull {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_hanull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
     applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_hanull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
