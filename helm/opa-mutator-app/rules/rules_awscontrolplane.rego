@@ -12,6 +12,16 @@ deny[msg] {
     msg = "Invalid choice of Master Node Availability Zones"
 }
 
+# User has selected an invalid instance type
+deny[msg] {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    is_string(input.request.object.spec.instanceType)
+    not functions.array_contains(vars.validInstanceTypes, input.request.object.spec.instanceType)
+    msg = "Invalid choice of Master Node Instance Type"
+}
+
+
 # User has selected the same availability zone twice
 deny[msg] {
     functions.is_create_or_update
@@ -59,6 +69,16 @@ patch["default_az_withg8s"] = mutation {
     is_null(input.request.object.spec.availabilityZones)
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
+    ]
+}
+
+# Defaulting: user has not selected any master node instance type
+patch["default_instance_type"] = mutation {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    is_null(input.request.object.spec.instanceType)
+    mutation := [
+        {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
     ]
 }
 
