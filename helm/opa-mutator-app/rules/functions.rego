@@ -34,6 +34,7 @@ hasAnnotationValue[[key, val]] {
     input.metadata.annotations[key] = val
 }
 
+# Returns whether array_b is a subset of array_a
 array_not_subset(array_a, array_b) {
   intersect := cast_set(array_a) & cast_set(array_b)
   complement := cast_set(array_b) - intersect
@@ -44,16 +45,19 @@ array_contains(array, elem) {
   array[_] = elem
 }
 
+# Returns whether the values inside the input array are all different from each other
 array_not_unique(array) {
   array[i] == array[j]
   i != j
 }
 
+# Returns a pseudo random number smaller than max
 random_number(max) = num {
   current_time := time.now_ns()
   num = current_time % max
 }
 
+# Returns n values from the input array, starting at a random index.
 n_shifted_values(array_in, n) = array_out {
  start := random_number(count(array_in))
  end := count(array_in)
