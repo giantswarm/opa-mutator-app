@@ -11,6 +11,23 @@ test_create_invalid_awscontrolplane {
     count(deny) = 1
 }
 
+# a non valid instance type
+test_create_invalid_instancetype_awscontrolplane {
+    deny = admission.deny with input as mocks.create_invalid_instancetype_awscontrolplane
+    contains(deny[_], "Invalid choice of Master Node Instance Type")
+    count(deny) = 1
+}
+
+# defaulting the instance type if it is null
+test_create_valid_awscontrolplane_instancenull {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_instancenull
+    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_instancenull
+
+    count(deny) = 0
+    count(applied_patches) = 1
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/instanceType\", \"value\": \"m5.xlarge\"}")
+}
+
 # a selection of AZs containing a duplicate
 test_create_duplicate_awscontrolplane {
     deny = admission.deny with input as mocks.create_duplicate_awscontrolplane
