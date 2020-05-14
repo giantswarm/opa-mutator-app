@@ -244,11 +244,6 @@ deploymentStrategy:
   type: RollingUpdate
 
 Installation:
-  V1:
-    Guest:
-      Calico:
-        CIDR: '16'
-        Subnet: '10.3.0.0'
   Provider:
     AWS:
       AvailabilityZones:
