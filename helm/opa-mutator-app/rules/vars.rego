@@ -26,3 +26,14 @@ validInstanceTypes = InstanceTypes {
 # Default Pod CIDR and Subnet
 defaultCIDR :=  functions.get_env_var("AWS_POD_CIDR")
 defaultSubnet :=  functions.get_env_var("AWS_POD_SUBNET")
+
+# List of the aws-operator legacy nodepool versions that need 
+# to reconcile the master attribute in the awsCluster
+# TODO: put the real values here
+awsOperatorLegacyNodepools := ["8.0.0", "8.2.0"]
+
+# Returns whether the input is using a non ha aws-operator version
+is_legacy_nodepool_version {
+  functions.hasLabelValue[["aws-operator.giantswarm.io/version", awsOperatorLegacyNodepools[_]]]
+}
+
