@@ -30,10 +30,10 @@ defaultSubnet :=  functions.get_env_var("AWS_POD_SUBNET")
 # List of the aws-operator legacy nodepool versions that need 
 # to reconcile the master attribute in the awsCluster
 # TODO: put the real values here
-awsOperatorLegacyNodepools := ["8.0.0", "8.2.0"]
+preHANodepools := ["11.0.1", "11.1.4", "11.2.0", "11.2.1", "11.3.0"]
 
 # Returns whether the input is using a non ha aws-operator version
-is_legacy_nodepool_version {
-  functions.hasLabelValue[["aws-operator.giantswarm.io/version", awsOperatorLegacyNodepools[_]]]
+is_preHA_nodepool_version {
+  functions.hasLabelValue[["release.giantswarm.io/version", preHANodepools[_]]]
 }
 
