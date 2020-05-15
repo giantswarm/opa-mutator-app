@@ -31,3 +31,14 @@ patch["default_instance_type"] = mutation {
         {"op": "add", "path": "/spec/provider~1master~1instanceType", "value": vars.defaultInstanceType},
     ]
 }
+
+# Defaulting: user has not selected any master node availability
+patch["default_az"] = mutation {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSCluster"
+    vars.is_legacy_nodepool_version
+    is_null(input.request.object.spec.provider.master.availabilityZone)
+    mutation := [
+        {"op": "add", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
+    ]
+}

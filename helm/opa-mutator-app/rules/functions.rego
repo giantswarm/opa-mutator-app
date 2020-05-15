@@ -57,6 +57,12 @@ random_number(max) = num {
   num = current_time % max
 }
 
+# Returns a random value from an array
+random_value(array_in) = out {
+ n := random_number(count(array_in))
+ out := array_in[n]
+}
+
 # Returns n values from the input array, starting at a random index.
 n_shifted_values(array_in, n) = array_out {
  start := random_number(count(array_in))
