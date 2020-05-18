@@ -19,7 +19,7 @@ deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
     is_string(input.request.object.spec.provider.master.instanceType)
-    not functions.array_contains(vars.validAZs, input.request.object.spec.provider.master.instanceType)
+    not functions.array_contains(vars.validInstanceTypes, input.request.object.spec.provider.master.instanceType)
     msg = "Invalid choice of Master Node Instance Type"
 }
 
