@@ -63,7 +63,7 @@ admissionControllerRules:
   - operations: ["CREATE", "UPDATE"]
     apiGroups: ["infrastructure.giantswarm.io"]
     apiVersions: ["v1alpha2"]
-    resources: ["awsclusters","awscontrolplanes", "g8scontrolplanes"]
+    resources: ["awsclusters", "awscontrolplanes", "g8scontrolplanes"]
 
 # Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
 # always running for admission control is important
