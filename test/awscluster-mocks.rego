@@ -175,7 +175,7 @@ create_valid_awscluster_instancenull = {
             "provider": {
                "master": {
                   "availabilityZone": "eu-central-1a",
-                  "instanceType": null,
+                  "instanceType": "",
                },
                "pods": {
                   "cidrBlock": ""
@@ -238,7 +238,7 @@ create_valid_awscluster_aznull = {
          "spec": {
             "provider": {
                "master": {
-                  "availabilityZone": null,
+                  "availabilityZone": "",
                   "instanceType": "m5.xlarge",
                },
                "pods": {
@@ -306,7 +306,7 @@ create_valid_awscluster_cninull = {
                   "instanceType": "m5.xlarge",
                },
                "pods": {
-                  "cidrBlock": null,
+                  "cidrBlock": "",
                },
             }
          },

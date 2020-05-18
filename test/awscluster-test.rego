@@ -18,7 +18,7 @@ test_create_invalid_instancetype_awscluster {
     count(deny) = 1
 }
 
-# defaulting the instance type if it is null
+# defaulting the instance type if it is empty
 test_create_valid_awscluster_instancenull {
     deny = admission.deny with input as mocks.create_valid_awscluster_instancenull
     applied_patches = admission.patch with input as mocks.create_valid_awscluster_instancenull
