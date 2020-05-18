@@ -168,8 +168,8 @@ create_valid_awscluster_instancenull = {
          "kind": "AWSCluster",
          "metadata": {
             "labels": {
-            "release.giantswarm.io/version": "11.0.1"
-            },
+            "release.giantswarm.io/version": "11.0.1",
+            }
          },
          "spec": {
             "provider": {
