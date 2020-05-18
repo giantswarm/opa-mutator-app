@@ -33,7 +33,7 @@ patch["default_instance_type"] = mutation {
     vars.is_preHA_nodepool_version
     input.request.object.spec.provider.master.instanceType == ""
     mutation := [
-        {"op": "add", "path": "/spec/provider~1master~1instanceType", "value": vars.defaultInstanceType},
+        {"op": "replace", "path": "/spec/provider~1master~1instanceType", "value": vars.defaultInstanceType},
     ]
 }
 
@@ -69,7 +69,7 @@ patch["default_az"] = mutation {
     vars.is_preHA_nodepool_version
     input.request.object.spec.provider.master.availabilityZone==""
     mutation := [
-        {"op": "add", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
+        {"op": "replace", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
     ]
 }
 
@@ -91,7 +91,7 @@ patch["default_cidr"] = mutation {
     input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
     input.request.object.spec.provider.pods.cidrBlock==""
     mutation := [
-        {"op": "add", "path": "/spec/provider~1pods~1cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
+        {"op": "replace", "path": "/spec/provider~1pods~1cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
     ]
 }
 
