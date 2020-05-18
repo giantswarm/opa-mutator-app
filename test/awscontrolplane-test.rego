@@ -103,13 +103,3 @@ test_create_valid_awscontrolplane_checkg8shafail {
     contains(deny[_], "Number of Availability Zones different than defined in G8SControlPlane")
     count(deny) = 1
 }
-
-
-test_create_valid_awscontrolplane_setcidr {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_nullcni
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_nullcni
-
-    count(deny) = 0
-    count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider~1cni\", \"value\": {\"cidrBlock\": \"10.2.0.0/16\"}}")
-}

@@ -37,3 +37,13 @@ test_create_valid_awscluster_aznull {
     count(applied_patches) = 1
     # contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider~1master~1instanceType\", \"value\": \"eu-central-1a\"}")
 }
+
+test_create_valid_awscluster_cninull {
+    deny = admission.deny with input as mocks.create_valid_awscluster_cninull
+    applied_patches = admission.patch with input as mocks.create_valid_awscluster_cninull
+
+    count(deny) = 0
+    count(applied_patches) = 1
+     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider~1pods\", \"value\": {\"cidrBlock\": \"10.2.0.0/16\"}}")
+}
+

@@ -82,12 +82,3 @@ patch["default_instance_type"] = mutation {
     ]
 }
 
-patch["default_cidr"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
-    is_null(input.request.object.spec.provider.cni)
-    mutation := [
-        {"op": "add", "path": "/spec/provider~1cni", "value": {"cidrBlock":  sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) }},
-    ]
-}

@@ -46,3 +46,13 @@ patch["default_az"] = mutation {
         {"op": "add", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
     ]
 }
+
+patch["default_cidr"] = mutation {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSCluster"
+    input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
+    is_null(input.request.object.spec.provider.pods)
+    mutation := [
+        {"op": "add", "path": "/spec/provider~1pods", "value": {"cidrBlock":  sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) }},
+    ]
+}
