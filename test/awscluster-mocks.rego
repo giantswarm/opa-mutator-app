@@ -305,7 +305,9 @@ create_valid_awscluster_cninull = {
                   "availabilityZone": "eu-central-1b",
                   "instanceType": "m5.xlarge",
                },
-               "pods": null,
+               "pods": {
+                  "cidrBlock": null,
+               },
             }
          },
       },
