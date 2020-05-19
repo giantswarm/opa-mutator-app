@@ -7,8 +7,9 @@ import data.vars
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    is_array(input.request.object.spec.availabilityZones)
-    functions.array_not_subset(vars.validAZs, input.request.object.spec.availabilityZones)
+    az = input.request.object.spec.availabilityZones
+    is_array(az)
+    functions.array_not_subset(vars.validAZs, az)
     msg = "Invalid choice of Master Node Availability Zones"
 }
 
@@ -16,8 +17,10 @@ deny[msg] {
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    is_string(input.request.object.spec.instanceType)
-    not functions.array_contains(vars.validInstanceTypes, input.request.object.spec.instanceType)
+    instanceType = input.request.object.spec.instanceType
+    is_string(instanceType)
+    count(instanceType) > 0
+    not functions.array_contains(vars.validInstanceTypes, instanceType)
     msg = "Invalid choice of Master Node Instance Type"
 }
 
@@ -26,8 +29,9 @@ deny[msg] {
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    is_array(input.request.object.spec.availabilityZones)
-    functions.array_not_unique(input.request.object.spec.availabilityZones)
+    az = input.request.object.spec.availabilityZones
+    is_array(az)
+    functions.array_not_unique(az)
     msg = "The same Master Node Availability Zone can not be selected more than once"
 }
 
@@ -35,8 +39,9 @@ deny[msg] {
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    is_array(input.request.object.spec.availabilityZones)
-    not functions.array_contains(vars.validReplicas, count(input.request.object.spec.availabilityZones))
+    az = input.request.object.spec.availabilityZones
+    is_array(az)
+    not functions.array_contains(vars.validReplicas, count(az))
     msg = "Invalid number of Availability Zones"
 }
 
@@ -44,9 +49,10 @@ deny[msg] {
 deny[msg] {
     functions.is_create
     input.request.kind.kind = "AWSControlPlane"
+    az = input.request.object.spec.availabilityZones
     input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
-    not is_null(input.request.object.spec.availabilityZones)
-    data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas != count(input.request.object.spec.availabilityZones)
+    not is_null(az)
+    data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas != count(az)
     msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
 
@@ -54,7 +60,8 @@ deny[msg] {
 patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    is_null(input.request.object.spec.availabilityZones)
+    az = input.request.object.spec.availabilityZones
+    is_null(az)
     not data.kubernetes.g8scontrolplanes[input.request.namespace][input.request.name]
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, vars.defaultReplicas)},
@@ -65,8 +72,9 @@ patch["default_az"] = mutation {
 patch["default_az_withg8s"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
+    az = input.request.object.spec.availabilityZones
     input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
-    is_null(input.request.object.spec.availabilityZones)
+    is_null(az)
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
     ]
@@ -76,7 +84,20 @@ patch["default_az_withg8s"] = mutation {
 patch["default_instance_type"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    is_null(input.request.object.spec.instanceType)
+    instanceType = input.request.object.spec.instanceType
+    is_null(instanceType)
+    mutation := [
+        {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
+    ]
+}
+
+# Defaulting: user has not selected any master node instance type
+patch["default_instance_type"] = mutation {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    instanceType = input.request.object.spec.instanceType
+    is_string(instanceType)
+    count(instanceType) == 0
     mutation := [
         {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
     ]

@@ -602,7 +602,7 @@ create_valid_awscontrolplane_instancenull = {
              "eu-central-1b",
              "eu-central-1c"
            ],
-           "instanceType": null,
+           "instanceType": "",
          }
       },
       "oldObject":null,

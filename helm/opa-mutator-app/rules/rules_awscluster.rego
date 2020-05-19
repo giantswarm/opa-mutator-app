@@ -8,9 +8,10 @@ import data.vars
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
-    is_string(input.request.object.spec.provider.master.availabilityZone)
-    count(input.request.object.spec.provider.master.availabilityZone) > 0
-    not functions.array_contains(vars.validAZs, input.request.object.spec.provider.master.availabilityZone)
+    az = input.request.object.spec.provider.master.availabilityZone
+    is_string(az)
+    count(az) > 0
+    not functions.array_contains(vars.validAZs, az)
     msg = "Invalid choice of Master Node Availability Zone"
 }
 
@@ -19,9 +20,10 @@ deny[msg] {
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
-    is_string(input.request.object.spec.provider.master.instanceType)
-    count(input.request.object.spec.provider.master.instanceType) > 0
-    not functions.array_contains(vars.validInstanceTypes, input.request.object.spec.provider.master.instanceType)
+    instanceType = input.request.object.spec.provider.master.instanceType
+    is_string(instanceType)
+    count(instanceType) > 0
+    not functions.array_contains(vars.validInstanceTypes, instanceType)
     msg = "Invalid choice of Master Node Instance Type"
 }
 
@@ -30,8 +32,10 @@ deny[msg] {
 patch["default_instance_type"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
+    instanceType = input.request.object.spec.provider.master.instanceType
     vars.is_preHA_nodepool_version
-    count(input.request.object.spec.provider.master.instanceType) == 0
+    is_string(instanceType)
+    count(instanceType) == 0
     mutation := [
         {"op": "replace", "path": "/spec/provider~1master~1instanceType", "value": vars.defaultInstanceType},
     ]
@@ -42,8 +46,9 @@ patch["default_instance_type"] = mutation {
 patch["default_instance_type"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
+    instanceType = input.request.object.spec.provider.master.instanceType
     vars.is_preHA_nodepool_version
-    is_null(input.request.object.spec.provider.master.instanceType)
+    is_null(instanceType)
     mutation := [
         {"op": "add", "path": "/spec/provider~1master~1instanceType", "value": vars.defaultInstanceType},
     ]
@@ -54,8 +59,9 @@ patch["default_instance_type"] = mutation {
 patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
+    az = input.request.object.spec.provider.master.availabilityZone
     vars.is_preHA_nodepool_version
-    is_null(input.request.object.spec.provider.master.availabilityZone)
+    is_null(az)
     mutation := [
         {"op": "add", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
     ]
@@ -66,8 +72,10 @@ patch["default_az"] = mutation {
 patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
+    az = input.request.object.spec.provider.master.availabilityZone
     vars.is_preHA_nodepool_version
-    count(input.request.object.spec.provider.master.availabilityZone) == 0
+    is_string(az)
+    count(az) == 0
     mutation := [
         {"op": "replace", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
     ]
@@ -77,8 +85,9 @@ patch["default_az"] = mutation {
 patch["default_cidr"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
-    #input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
-    is_null(input.request.object.spec.provider.pods.cidrBlock)
+    cidrBlock = input.request.object.spec.provider.pods.cidrBlock
+    input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
+    is_null(cidrBlock)
     mutation := [
         {"op": "add", "path": "/spec/provider~1pods~1cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
     ]
@@ -88,8 +97,10 @@ patch["default_cidr"] = mutation {
 patch["default_cidr"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
-    #input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
-    count(input.request.object.spec.provider.pods.cidrBlock) == 0
+    cidrBlock = input.request.object.spec.provider.pods.cidrBlock
+    input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
+    is_string(cidrBlock)
+    count(cidrBlock) == 0
     mutation := [
         {"op": "replace", "path": "/spec/provider~1pods~1cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
     ]
