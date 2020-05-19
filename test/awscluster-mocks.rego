@@ -50,7 +50,7 @@ create_invalid_awscluster = {
                   "instanceType": "m5.xlarge",
                },
                "pods": {
-                  "cidrBlock": ""
+                  "cidrBlock": "10.2.0.0/16"
                },
             }
          },
@@ -114,7 +114,7 @@ create_invalid_instancetype_awscluster = {
                   "instanceType": "bad",
                },
                "pods": {
-                  "cidrBlock": ""
+                  "cidrBlock": "10.2.0.0/16"
                },
             }
          },
@@ -178,7 +178,7 @@ create_valid_awscluster_instancenull = {
                   "instanceType": "",
                },
                "pods": {
-                  "cidrBlock": ""
+                  "cidrBlock": "10.2.0.0/16"
                },
             }
          },
@@ -242,7 +242,7 @@ create_valid_awscluster_aznull = {
                   "instanceType": "m5.xlarge",
                },
                "pods": {
-                  "cidrBlock": ""
+                  "cidrBlock": "10.2.0.0/16"
                },
             }
          },
