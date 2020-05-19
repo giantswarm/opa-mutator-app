@@ -54,7 +54,7 @@ patch["default_instance_type"] = mutation {
     ]
 }
 
-# Defaulting: user has not selected any master node availability
+# Defaulting: user has not selected any master node availability zone
 # This is for older nodepool clusters that still use the `Master` field
 patch["default_az"] = mutation {
     functions.is_create_or_update
@@ -67,7 +67,7 @@ patch["default_az"] = mutation {
     ]
 }
 
-# Defaulting: user has not selected any master node availability
+# Defaulting: user has not selected any master node availability zone
 # This is for older nodepool clusters that still use the `Master` field
 patch["default_az"] = mutation {
     functions.is_create_or_update

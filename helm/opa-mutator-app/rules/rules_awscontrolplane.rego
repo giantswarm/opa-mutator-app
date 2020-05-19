@@ -63,6 +63,7 @@ patch["default_az"] = mutation {
     az = input.request.object.spec.availabilityZones
     is_null(az)
     not data.kubernetes.g8scontrolplanes[input.request.namespace][input.request.name]
+    not vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, vars.defaultReplicas)},
     ]
@@ -75,8 +76,23 @@ patch["default_az_withg8s"] = mutation {
     az = input.request.object.spec.availabilityZones
     input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
     is_null(az)
+    not vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
+    ]
+}
+
+# Defaulting: User has not selected any AZ, its a pre HA version and an awscluster exists
+patch["default_az_preHA"] = mutation {
+    functions.is_create_or_update
+    input.request.kind.kind = "AWSControlPlane"
+    az = input.request.object.spec.availabilityZones
+    is_null(az)
+    vars.is_preHA_nodepool_version
+    functions.hasLabel["giantswarm.io/cluster"]
+    input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
+    mutation := [
+        {"op": "add", "path": "/spec/availabilityZones", "value": [data.kubernetes.awsclusters[input.request.namespace][n].spec.provider.master.availabilityZone]},
     ]
 }
 

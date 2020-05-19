@@ -88,6 +88,16 @@ test_create_valid_awscontrolplane_checkg8ssinull {
     count(deny) = 0
 }
 
+# Check pre HA AWSControlplane against existing AWSCluster with defaulting
+test_create_valid_awscontrolplane_preha {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_preha with data.kubernetes.awsclusters as mocks.mocked_awsclusters
+    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_preha  with data.kubernetes.awsclusters as mocks.mocked_awsclusters
+
+    count(applied_patches) = 1
+    count(deny) = 0
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1c\"]}")
+}
+
 # Check HA AWSControlplane against existing G8SControlPlane
 test_create_valid_awscontrolplane_checkg8sha {
     deny = admission.deny with input as mocks.create_valid_awscontrolplane_ha with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes

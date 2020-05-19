@@ -1,5 +1,33 @@
 package mocks
 
+mocked_awsclusters = {
+   "default": {
+      "2pm8s": {
+            "apiVersion": "infrastructure.giantswarm.io/v1alpha2",
+            "kind": "AWSCluster",
+            "metadata": {
+               "annotations": {
+                     "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+                  },
+               "creationTimestamp": null,
+               "name": "2pm8s",
+               "namespace": "default"
+            },
+            "spec": {
+              "provider": {
+                 "master": {
+                    "availabilityZone": "eu-central-1c",
+                    "instanceType": "m5.xlarge",
+                  },
+                 "pods": {
+                   "cidrBlock": "10.2.0.0/16"
+                 },
+               }
+            },
+         },
+   }
+}
+
 create_invalid_awscluster = {
    "kind":"AdmissionReview",
    "apiVersion":"admission.k8s.io/v1beta1",

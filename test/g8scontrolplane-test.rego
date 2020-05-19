@@ -14,6 +14,16 @@ test_create_valid_g8scontrolplanenull {
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 3}")
 }
 
+# Defaulting the replicas if they are null in a pre ha version
+test_create_valid_g8scontrolplane_preha {
+    deny = admission.deny with input as mocks.create_valid_g8scontrolplane_preha
+    applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_preha
+
+    count(deny) = 0
+    count(applied_patches) = 1
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 1}")
+}
+
 # Defaulting the replicas when the awscontrolplane already exists with single AZ
 test_create_valid_g8scontrolplanesinglenull {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_singlenull  with data.kubernetes.awscontrolplanes as mocks.mocked_awscontrolplanes
