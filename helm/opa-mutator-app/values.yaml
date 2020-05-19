@@ -185,6 +185,7 @@ rbac:
     - apiGroups:
         - "infrastructure.giantswarm.io"
       resources:
+        - awsclusters
         - awscontrolplanes
         - g8scontrolplanes
       verbs:
