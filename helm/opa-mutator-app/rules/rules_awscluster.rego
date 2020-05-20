@@ -37,7 +37,7 @@ patch["default_instance_type"] = mutation {
     is_string(instanceType)
     count(instanceType) == 0
     mutation := [
-        {"op": "replace", "path": "/spec/provider~1master~1instanceType", "value": vars.defaultInstanceType},
+        {"op": "replace", "path": "/spec/provider/master/instanceType", "value": vars.defaultInstanceType},
     ]
 }
 
@@ -50,7 +50,7 @@ patch["default_instance_type"] = mutation {
     vars.is_preHA_nodepool_version
     is_null(instanceType)
     mutation := [
-        {"op": "add", "path": "/spec/provider~1master~1instanceType", "value": vars.defaultInstanceType},
+        {"op": "add", "path": "/spec/provider/master/instanceType", "value": vars.defaultInstanceType},
     ]
 }
 
@@ -63,7 +63,7 @@ patch["default_az"] = mutation {
     vars.is_preHA_nodepool_version
     is_null(az)
     mutation := [
-        {"op": "add", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
+        {"op": "add", "path": "/spec/provider/master/availabilityZone", "value": functions.random_value(vars.validAZs)},
     ]
 }
 
@@ -77,7 +77,7 @@ patch["default_az"] = mutation {
     is_string(az)
     count(az) == 0
     mutation := [
-        {"op": "replace", "path": "/spec/provider~1master~availabilityZone", "value": functions.random_value(vars.validAZs)},
+        {"op": "replace", "path": "/spec/provider/master/availabilityZone", "value": functions.random_value(vars.validAZs)},
     ]
 }
 
@@ -89,7 +89,7 @@ patch["default_cidr"] = mutation {
     input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
     is_null(cidrBlock)
     mutation := [
-        {"op": "add", "path": "/spec/provider~1pods~1cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
+        {"op": "add", "path": "/spec/provider/pods/cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
     ]
 }
 
@@ -102,7 +102,7 @@ patch["default_cidr"] = mutation {
     is_string(cidrBlock)
     count(cidrBlock) == 0
     mutation := [
-        {"op": "replace", "path": "/spec/provider~1pods~1cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
+        {"op": "replace", "path": "/spec/provider/pods/cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
     ]
 }
 
