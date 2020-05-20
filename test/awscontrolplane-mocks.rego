@@ -665,7 +665,7 @@ create_valid_awscontrolplane_preha = {
          },
          "spec": {
            "availabilityZones": null,
-           "instanceType": "m4.xlarge"
+           "instanceType": null,
          }
       },
       "oldObject":null,

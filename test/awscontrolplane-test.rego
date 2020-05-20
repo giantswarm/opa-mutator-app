@@ -93,9 +93,10 @@ test_create_valid_awscontrolplane_preha {
     deny = admission.deny with input as mocks.create_valid_awscontrolplane_preha with data.kubernetes.awsclusters as mocks.mocked_awsclusters
     applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_preha  with data.kubernetes.awsclusters as mocks.mocked_awsclusters
 
-    count(applied_patches) = 1
+    count(applied_patches) = 2
     count(deny) = 0
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1c\"]}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/instanceType\", \"value\": \"m5.xlarge\"}")
 }
 
 # Check HA AWSControlplane against existing G8SControlPlane
