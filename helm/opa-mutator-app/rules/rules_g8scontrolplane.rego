@@ -7,8 +7,9 @@ import data.vars
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
-    is_number(input.request.object.spec.replicas)
-    not functions.array_contains(vars.validReplicas, input.request.object.spec.replicas)
+    replicas = input.request.object.spec.replicas
+    is_number(replicas)
+    not functions.array_contains(vars.validReplicas, replicas)
     msg = "Invalid number of Master Node replicas"
 }
 
@@ -17,9 +18,10 @@ deny[msg] {
 deny[msg] {
     functions.is_create
     input.request.kind.kind = "G8sControlPlane"
+    replicas = input.request.object.spec.replicas
     input.request.name = data.kubernetes.awscontrolplanes[input.request.namespace][n].metadata.name
-    not is_null(input.request.object.spec.replicas)
-    input.request.object.spec.replicas != count(data.kubernetes.awscontrolplanes[input.request.namespace][n].spec.availabilityZones)
+    not is_null(replicas)
+    replicas != count(data.kubernetes.awscontrolplanes[input.request.namespace][n].spec.availabilityZones)
     msg = "Number of Availability Zones different than defined in AWSControlPlane"
 }
 
@@ -27,7 +29,9 @@ deny[msg] {
 patch["default_replicas"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
-    is_null(input.request.object.spec.replicas)
+    replicas = input.request.object.spec.replicas
+    is_null(replicas)
+    not vars.is_preHA_nodepool_version
     not data.kubernetes.awscontrolplanes[input.request.namespace][input.request.name]
     mutation := [
         {"op": "add", "path": "/spec/replicas", "value": vars.defaultReplicas},
@@ -38,9 +42,23 @@ patch["default_replicas"] = mutation {
 patch["default_replicas_withaws"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
+    replicas = input.request.object.spec.replicas
     input.request.name = data.kubernetes.awscontrolplanes[input.request.namespace][n].metadata.name
-    is_null(input.request.object.spec.replicas)
+    is_null(replicas)
+    not vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/replicas", "value": count(data.kubernetes.awscontrolplanes[input.request.namespace][n].spec.availabilityZones)},
+    ]
+}
+
+# Defaulting: replicas are always 1 in pre-ha versions
+patch["default_replicas_preHA"] = mutation {
+    functions.is_create_or_update
+    input.request.kind.kind = "G8sControlPlane"
+    replicas = input.request.object.spec.replicas
+    is_null(replicas)
+    vars.is_preHA_nodepool_version
+    mutation := [
+        {"op": "add", "path": "/spec/replicas", "value": 1},
     ]
 }

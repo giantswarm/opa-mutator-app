@@ -88,6 +88,17 @@ test_create_valid_awscontrolplane_checkg8ssinull {
     count(deny) = 0
 }
 
+# Check pre HA AWSControlplane against existing AWSCluster with defaulting
+test_create_valid_awscontrolplane_preha {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_preha with data.kubernetes.awsclusters as mocks.mocked_awsclusters
+    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_preha  with data.kubernetes.awsclusters as mocks.mocked_awsclusters
+
+    count(applied_patches) = 2
+    count(deny) = 0
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1c\"]}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/instanceType\", \"value\": \"m5.xlarge\"}")
+}
+
 # Check HA AWSControlplane against existing G8SControlPlane
 test_create_valid_awscontrolplane_checkg8sha {
     deny = admission.deny with input as mocks.create_valid_awscontrolplane_ha with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
@@ -102,14 +113,4 @@ test_create_valid_awscontrolplane_checkg8shafail {
 
     contains(deny[_], "Number of Availability Zones different than defined in G8SControlPlane")
     count(deny) = 1
-}
-
-
-test_create_valid_awscontrolplane_setcidr {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_nullcni
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_nullcni
-
-    count(deny) = 0
-    count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider~1cni\", \"value\": {\"cidrBlock\": \"10.2.0.0/16\"}}")
 }

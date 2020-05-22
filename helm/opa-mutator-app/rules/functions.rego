@@ -8,30 +8,30 @@ is_create { input.request.operation == "CREATE" }
 
 is_update { input.request.operation == "UPDATE" }
 
-hasLabels { input.metadata.labels }
+hasLabels { input.request.object.metadata.labels }
 
 hasLabel[label] {
-    hasLabels
-    input.metadata.labels[label]
+  hasLabels
+  input.request.object.metadata.labels[label]
 }
 
 hasLabelValue[[key, val]] {
-    hasLabels
-    input.metadata.labels[key] = val
+  hasLabels
+  input.request.object.metadata.labels[key] = val
 }
 
 hasAnnotations {
-    input.metadata.annotations
+  input.request.object.metadata.annotations
 }
 
 hasAnnotation[annotation] {
-    hasAnnotations
-    input.metadata.annotations[annotation]
+  hasAnnotations
+  input.request.object.metadata.annotations[annotation]
 }
 
 hasAnnotationValue[[key, val]] {
-    hasAnnotations
-    input.metadata.annotations[key] = val
+  hasAnnotations
+  input.request.object.metadata.annotations[key] = val
 }
 
 # Returns whether array_b is a subset of array_a
@@ -57,12 +57,18 @@ random_number(max) = num {
   num = current_time % max
 }
 
+# Returns a random value from an array
+random_value(array_in) = out {
+  n := random_number(count(array_in))
+  out := array_in[n]
+}
+
 # Returns n values from the input array, starting at a random index.
 n_shifted_values(array_in, n) = array_out {
- start := random_number(count(array_in))
- end := count(array_in)
- array_a := array.slice(array_in, start, end)
- array_b := array.slice(array_in, 0, start)
- shifted := array.concat(array_a, array_b)
- array_out := array.slice(shifted, 0, n)
+  start := random_number(count(array_in))
+  end := count(array_in)
+  array_a := array.slice(array_in, start, end)
+  array_b := array.slice(array_in, 0, start)
+  shifted := array.concat(array_a, array_b)
+  array_out := array.slice(shifted, 0, n)
 }
