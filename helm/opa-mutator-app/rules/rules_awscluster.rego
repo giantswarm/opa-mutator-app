@@ -86,7 +86,6 @@ patch["default_cidr"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
     cidrBlock = input.request.object.spec.provider.pods.cidrBlock
-    input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
     is_null(cidrBlock)
     mutation := [
         {"op": "add", "path": "/spec/provider/pods/cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
@@ -98,7 +97,6 @@ patch["default_cidr"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
     cidrBlock = input.request.object.spec.provider.pods.cidrBlock
-    input.request.object.apiVersion = "infrastructure.giantswarm.io/v1"
     is_string(cidrBlock)
     count(cidrBlock) == 0
     mutation := [
