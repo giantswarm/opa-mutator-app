@@ -29,7 +29,7 @@ defaultSubnet :=  functions.get_env_var("AWS_POD_SUBNET")
 
 # List of the aws-operator legacy nodepool versions that need 
 # to reconcile the master attribute in the awsCluster
-preHANodepools := ["11.0.1", "11.1.4", "11.2.0", "11.2.1", "11.3.0"]
+preHANodepools := ["11.0.1", "11.1.4", "11.2.0", "11.2.1", "11.3.0", "11.3.1"]
 
 # Returns whether the input is a non ha release version
 is_preHA_nodepool_version {
