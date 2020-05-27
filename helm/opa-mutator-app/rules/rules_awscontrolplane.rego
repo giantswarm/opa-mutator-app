@@ -18,8 +18,7 @@ deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     instanceType = input.request.object.spec.instanceType
-    is_string(instanceType)
-    count(instanceType) > 0
+    functions.is_defined(instanceType)
     not functions.array_contains(vars.validInstanceTypes, instanceType)
     msg = "Invalid choice of Master Node Instance Type"
 }
@@ -51,7 +50,7 @@ deny[msg] {
     input.request.kind.kind = "AWSControlPlane"
     az = input.request.object.spec.availabilityZones
     input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
-    not is_null(az)
+    functions.is_defined(az)
     data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas != count(az)
     msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
@@ -61,7 +60,7 @@ patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     az = input.request.object.spec.availabilityZones
-    is_null(az)
+    functions.is_null_or_empty(az)
     not data.kubernetes.g8scontrolplanes[input.request.namespace][input.request.name]
     not vars.is_preHA_nodepool_version
     mutation := [
@@ -75,7 +74,7 @@ patch["default_az_withg8s"] = mutation {
     input.request.kind.kind = "AWSControlPlane"
     az = input.request.object.spec.availabilityZones
     input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
-    is_null(az)
+    functions.is_null_or_empty(az)
     not vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
@@ -87,7 +86,7 @@ patch["default_az_preHA"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     az = input.request.object.spec.availabilityZones
-    is_null(az)
+    functions.is_null_or_empty(az)
     vars.is_preHA_nodepool_version
     functions.hasLabel["giantswarm.io/cluster"]
     input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
@@ -101,22 +100,7 @@ patch["default_instancetype_preHA"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     instanceType = input.request.object.spec.instanceType
-    is_null(instanceType)
-    vars.is_preHA_nodepool_version
-    functions.hasLabel["giantswarm.io/cluster"]
-    input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
-    mutation := [
-        {"op": "add", "path": "/spec/instanceType", "value": data.kubernetes.awsclusters[input.request.namespace][n].spec.provider.master.instanceType},
-    ]
-}
-
-# Defaulting: User has not selected any instance type, its a pre HA version and an awscluster exists
-patch["default_instancetype_preHA"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    instanceType = input.request.object.spec.instanceType
-    is_string(instanceType)
-    count(instanceType)==0
+    functions.is_null_or_empty(instanceType)
     vars.is_preHA_nodepool_version
     functions.hasLabel["giantswarm.io/cluster"]
     input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
@@ -131,22 +115,8 @@ patch["default_instance_type"] = mutation {
     input.request.kind.kind = "AWSControlPlane"
     instanceType = input.request.object.spec.instanceType
     not vars.is_preHA_nodepool_version
-    is_null(instanceType)
+    functions.is_null_or_empty(instanceType)
     mutation := [
         {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
     ]
 }
-
-# Defaulting: user has not selected any master node instance type
-patch["default_instance_type"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    instanceType = input.request.object.spec.instanceType
-    not vars.is_preHA_nodepool_version
-    is_string(instanceType)
-    count(instanceType) == 0
-    mutation := [
-        {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
-    ]
-}
-

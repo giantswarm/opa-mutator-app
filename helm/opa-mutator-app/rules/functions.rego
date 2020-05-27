@@ -8,6 +8,34 @@ is_create { input.request.operation == "CREATE" }
 
 is_update { input.request.operation == "UPDATE" }
 
+is_null_or_empty(value) {
+  is_null(value)
+}
+
+is_null_or_empty(value) {
+  is_string(value)
+  count(value) == 0
+}
+
+is_null_or_empty(value) {
+  is_array(value)
+  count(value) == 0
+}
+
+is_defined(value) {
+  is_string(value)
+  count(value) > 0
+}
+
+is_defined(value) {
+  is_array(value)
+  count(value) > 0
+}
+
+is_defined(value) {
+  is_number(value)
+}
+
 hasLabels { input.request.object.metadata.labels }
 
 hasLabel[label] {
