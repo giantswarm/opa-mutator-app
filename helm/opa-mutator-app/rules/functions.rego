@@ -8,6 +8,15 @@ is_create { input.request.operation == "CREATE" }
 
 is_update { input.request.operation == "UPDATE" }
 
+is_null_or_empty_attribute(object, attribute){
+  not object[attribute]
+}
+
+is_null_or_empty_attribute(object, attribute){
+  object[attribute]
+  is_null_or_empty(object[attribute])
+}
+
 is_null_or_empty(value) {
   is_null(value)
 }

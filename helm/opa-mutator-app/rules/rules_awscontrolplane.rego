@@ -59,8 +59,7 @@ deny[msg] {
 patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    az = input.request.object.spec.availabilityZones
-    functions.is_null_or_empty(az)
+    functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
     not data.kubernetes.g8scontrolplanes[input.request.namespace][input.request.name]
     not vars.is_preHA_nodepool_version
     mutation := [
@@ -72,9 +71,8 @@ patch["default_az"] = mutation {
 patch["default_az_withg8s"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    az = input.request.object.spec.availabilityZones
+    functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
     input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
-    functions.is_null_or_empty(az)
     not vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
@@ -85,8 +83,7 @@ patch["default_az_withg8s"] = mutation {
 patch["default_az_preHA"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    az = input.request.object.spec.availabilityZones
-    functions.is_null_or_empty(az)
+    functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
     vars.is_preHA_nodepool_version
     functions.hasLabel["giantswarm.io/cluster"]
     input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
@@ -99,8 +96,7 @@ patch["default_az_preHA"] = mutation {
 patch["default_instancetype_preHA"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    instanceType = input.request.object.spec.instanceType
-    functions.is_null_or_empty(instanceType)
+    functions.is_null_or_empty_attribute(input.request.object.spec, "instanceType")
     vars.is_preHA_nodepool_version
     functions.hasLabel["giantswarm.io/cluster"]
     input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
@@ -113,9 +109,8 @@ patch["default_instancetype_preHA"] = mutation {
 patch["default_instance_type"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
-    instanceType = input.request.object.spec.instanceType
+    functions.is_null_or_empty_attribute(input.request.object.spec, "instanceType")
     not vars.is_preHA_nodepool_version
-    functions.is_null_or_empty(instanceType)
     mutation := [
         {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
     ]

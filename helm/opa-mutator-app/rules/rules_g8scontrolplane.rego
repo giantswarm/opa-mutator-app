@@ -29,8 +29,8 @@ deny[msg] {
 patch["default_replicas"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
-    replicas = input.request.object.spec.replicas
-    functions.is_null_or_empty(replicas)
+    functions.is_null_or_empty_attribute(input.request.object.spec, "replicas")
+
     not vars.is_preHA_nodepool_version
     not data.kubernetes.awscontrolplanes[input.request.namespace][input.request.name]
     mutation := [
@@ -42,9 +42,8 @@ patch["default_replicas"] = mutation {
 patch["default_replicas_withaws"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
-    replicas = input.request.object.spec.replicas
+    functions.is_null_or_empty_attribute(input.request.object.spec, "replicas")
     input.request.name = data.kubernetes.awscontrolplanes[input.request.namespace][n].metadata.name
-    functions.is_null_or_empty(replicas)
     not vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/replicas", "value": count(data.kubernetes.awscontrolplanes[input.request.namespace][n].spec.availabilityZones)},
@@ -55,8 +54,7 @@ patch["default_replicas_withaws"] = mutation {
 patch["default_replicas_preHA"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "G8sControlPlane"
-    replicas = input.request.object.spec.replicas
-    functions.is_null_or_empty(replicas)
+    functions.is_null_or_empty_attribute(input.request.object.spec, "replicas")
     vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/replicas", "value": 1},
