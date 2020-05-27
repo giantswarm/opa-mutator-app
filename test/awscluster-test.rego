@@ -28,6 +28,17 @@ test_create_valid_awscluster_instancenull {
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider/master/instanceType\", \"value\": \"m5.xlarge\"}")
 }
 
+# defaulting the instance type if it is empty
+test_create_valid_awscluster_noinstance {
+    deny = admission.deny with input as mocks.create_valid_awscluster_noinstance
+    applied_patches = admission.patch with input as mocks.create_valid_awscluster_noinstance
+
+    count(deny) = 0
+    count(applied_patches) = 1
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider/master/instanceType\", \"value\": \"m5.xlarge\"}")
+}
+
+
 # defaulting the AZ if it is null
 test_create_valid_awscluster_aznull {
     deny = admission.deny with input as mocks.create_valid_awscluster_aznull
@@ -52,6 +63,15 @@ test_create_awsclusters_noaz {
 test_create_valid_awscluster_cninull {
     deny = admission.deny with input as mocks.create_valid_awscluster_cninull
     applied_patches = admission.patch with input as mocks.create_valid_awscluster_cninull
+
+    count(deny) = 0
+    count(applied_patches) = 1
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/provider/pods/cidrBlock\", \"value\": \"10.2.0.0/16\"}")
+}
+
+test_create_valid_awscluster_nocni {
+    deny = admission.deny with input as mocks.create_valid_awscluster_nocni
+    applied_patches = admission.patch with input as mocks.create_valid_awscluster_nocni
 
     count(deny) = 0
     count(applied_patches) = 1
