@@ -88,6 +88,14 @@ test_create_valid_awscontrolplane_checkg8ssinull {
     count(deny) = 0
 }
 
+test_create_valid_awscontrolplane_checkg8ssino {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_singlenoaz with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
+    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_singlenoaz  with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
+
+    count(applied_patches) = 1
+    count(deny) = 0
+}
+
 # Check pre HA AWSControlplane against existing AWSCluster with defaulting
 test_create_valid_awscontrolplane_preha {
     deny = admission.deny with input as mocks.create_valid_awscontrolplane_preha with data.kubernetes.awsclusters as mocks.mocked_awsclusters
