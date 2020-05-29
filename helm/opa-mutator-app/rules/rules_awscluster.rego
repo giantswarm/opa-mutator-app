@@ -8,6 +8,7 @@ import data.vars
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
+    vars.is_preHA_nodepool_version
     az = input.request.object.spec.provider.master.availabilityZone
     functions.is_defined(az)
     not functions.array_contains(vars.validAZs, az)
@@ -19,6 +20,7 @@ deny[msg] {
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSCluster"
+    vars.is_preHA_nodepool_version
     instanceType = input.request.object.spec.provider.master.instanceType
     is_string(instanceType)
     count(instanceType) > 0
