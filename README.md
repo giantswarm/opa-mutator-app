@@ -1,7 +1,36 @@
 [![CircleCI](https://circleci.com/gh/giantswarm/opa-mutator-app.svg?style=svg)](https://circleci.com/gh/giantswarm/opa-mutator-app)
 
-# opa-mutator-app
-[open policy agent](https://www.openpolicyagent.org/) app running on installations to validate and default kubernetes custom resources using webhooks.
+# OPA for Giant Swarm
+[open policy agent](https://www.openpolicyagent.org/) app running on installations to validate and mutate kubernetes kubernetes resources using webhooks.
+
+![OPA](./media/opa.png)
+
+The following objects will be intercepted by OPA in order to validate/mutate:
+- infrastructure.giantswarm.io/v1alpha2/awsclusters
+- infrastructure.giantswarm.io/v1alpha2/awscontrolplanes
+- infrastructure.giantswarm.io/v1alpha2/g8scontrolplanes
+
+Validation rules:
+- awsclusters
+    - Check availabilityZone is valid
+    - Check instanceType is valid
+    - Default availabilityZone if not defined
+    - Default instanceType if not defined
+    - Default pods cidrBlock if not defined
+
+- awscontrolplanes
+    - Check availabilityZones are valid
+    - Check availabilityZones are unique
+    - Check availabilityZones count is 1 or 3
+    - Check availabilityZones count is the same as defined in g8scontrolplanes
+    - Check instanceType is valid
+    - Default availabilityZone if not defined
+    - Default instanceType if not defined
+
+- g8scontrolplanes
+    - Check replicas is 1 or 3
+    - Check replicas is the length of availabilityZones defined in awscontrolplanes
+    - Default replicas if not defined
 
 ## Rendering the helm template locally
 `helm template helm/opa-mutator-app -f opa_values.yaml`
@@ -34,8 +63,8 @@ In `deployment.yaml` file:
 ```
 
 ## Rules for defaulting and validation
-The body of a rule written in `rego` format is made up of logical statements. 
-If they all evaluate to `true` for an input, the rule will be applied. 
+The body of a rule written in `rego` format is made up of logical statements.
+If they all evaluate to `true` for an input, the rule will be applied.
 
 To validate a field in a custom resource, we can define which inputs have to be denied.
 ```
@@ -97,10 +126,17 @@ test_create_valid_g8scontrolplanenull {
     deny = admission.deny with input as mocks.create_valid_g8scontrolplane_singlenull
     applied_patches = admission.patch with input as mocks.create_valid_g8scontrolplane_singlenull
 
-    # if the rule was applied, the default value should appear and one patch 
+    # if the rule was applied, the default value should appear and one patch
     # as well as no deny should be counted
     count(deny) = 0
     count(applied_patches) = 1
     contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/replicas\", \"value\": 1}")
 }
 ```
+
+## Found a problem?
+If OPA is not available in the cluster for some reason, the objects managed by OPA will not be able to be created or updated.
+
+In order to disable OPA execute the following command and create an issue:
+
+`$> kubectl delete mutatingwebhookconfigurations.admissionregistration.k8s.io opa-mutator-app-unique `
