@@ -1,7 +1,7 @@
 [![CircleCI](https://circleci.com/gh/giantswarm/opa-mutator-app.svg?style=svg)](https://circleci.com/gh/giantswarm/opa-mutator-app)
 
 # OPA for Giant Swarm
-[open policy agent](https://www.openpolicyagent.org/) app running on installations to validate and mutate kubernetes kubernetes resources using webhooks.
+[Open Policy Agent](https://www.openpolicyagent.org/) app running on installations to validate and mutate Giant Swarm kubernetes resources using webhooks.
 
 ![OPA](./media/opa.png)
 
