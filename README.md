@@ -23,6 +23,7 @@ Validation rules:
     - Check availabilityZones are unique
     - Check availabilityZones count is 1 or 3
     - Check availabilityZones count is the same as defined in g8scontrolplanes
+    - Check availabilityZones order is not changed on update
     - Check instanceType is valid
     - Default availabilityZone if not defined
     - Default instanceType if not defined
