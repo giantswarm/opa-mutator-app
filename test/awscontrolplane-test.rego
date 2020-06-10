@@ -122,3 +122,10 @@ test_create_valid_awscontrolplane_checkg8shafail {
     contains(deny[_], "Number of Availability Zones different than defined in G8SControlPlane")
     count(deny) = 1
 }
+
+# Check if the order of AZs was changed
+test_create_valid_awscontrolplane_update {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_update
+    contains(deny[_], "Can not change the order of availability zones.")
+    count(deny) = 1
+}
