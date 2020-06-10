@@ -801,7 +801,9 @@ create_valid_awscontrolplane_update = {
          },
          "spec": {
            "availabilityZones": [
+               "eu-central-1c",
                "eu-central-1b",
+               "eu-central-1a",
             ],
            "instanceType": "m4.xlarge"
          }
