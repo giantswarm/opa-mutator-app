@@ -121,5 +121,5 @@ add_n_values(array_in, elem, n) = array_out {
 }
 
 orderChanged(array_old, array_new) {
-  array_old[i] == array_new[j]; i!=j
+   array_old[i] == array_new[j]; array_old[i] != array_new[i]
 }
