@@ -27,13 +27,20 @@ validInstanceTypes = InstanceTypes {
 defaultCIDR :=  functions.get_env_var("AWS_POD_CIDR")
 defaultSubnet :=  functions.get_env_var("AWS_POD_SUBNET")
 
-# List of the aws-operator legacy nodepool versions that need 
+# Latest pre-HA version of Giant Swarm
 # to reconcile the master attribute in the awsCluster
-preHANodepools := ["11.0.1", "11.1.4", "11.2.0", "11.2.1", "11.3.0", "11.3.1"]
+lastPreHAVersion := "11.3.9"
 
 # Returns whether the input is a non ha release version
 is_preHA_nodepool_version {
-  functions.hasLabelValue[["release.giantswarm.io/version", preHANodepools[_]]]	
+    currentv = input.request.object.metadata.labels["release.giantswarm.io/version"]
+	  currentv_clean = split(currentv, "-")[0]
+    currentv_split := split(currentv_clean, ".")
+    lastPreHAVersion_split := split(lastPreHAVersion, ".")
+
+  	to_number(currentv_split[0]) <= to_number(lastPreHAVersion_split[0])
+  	to_number(currentv_split[1]) <= to_number(lastPreHAVersion_split[1])
+  	to_number(currentv_split[2]) <= to_number(lastPreHAVersion_split[2])
 }
 
 # Returns whether the installation has less available AZs than possible Master replicas
