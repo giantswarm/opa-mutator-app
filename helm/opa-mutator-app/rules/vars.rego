@@ -42,3 +42,8 @@ is_preHA_nodepool_version {
   	to_number(currentv_split[1]) <= to_number(lastPreHAVersion_split[1])
   	to_number(currentv_split[2]) <= to_number(lastPreHAVersion_split[2])
 }
+
+# Returns whether the installation has less available AZs than possible Master replicas
+isLimitedAZRegion {
+  count(validAZs)<max(validReplicas)
+}

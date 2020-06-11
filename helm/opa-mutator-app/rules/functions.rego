@@ -107,7 +107,11 @@ n_shifted_values(array_in, n) = array_out {
   array_a := array.slice(array_in, start, end)
   array_b := array.slice(array_in, 0, start)
   shifted := array.concat(array_a, array_b)
-  array_out := array.slice(shifted, 0, n)
+  # TODO: concating the array 3 times here makes sure that it's long enough for 3
+  # Masters in one AZ. However, this should be changed to something dynamic
+  doubled:= array.concat(shifted, shifted)
+  quadrupled:= array.concat(doubled, doubled)
+  array_out := array.slice(quadrupled, 0, n)
 }
 
 add_n_values(array_in, elem, n) = array_out {
