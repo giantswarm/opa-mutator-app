@@ -29,7 +29,7 @@ defaultSubnet :=  functions.get_env_var("AWS_POD_SUBNET")
 
 # Latest pre-HA version of Giant Swarm
 # to reconcile the master attribute in the awsCluster
-lastPreHAVersion := "11.3.1"
+lastPreHAVersion := "11.3.9"
 
 # Returns whether the input is a non ha release version
 is_preHA_nodepool_version {
