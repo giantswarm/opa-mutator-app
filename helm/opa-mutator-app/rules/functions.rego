@@ -109,3 +109,13 @@ n_shifted_values(array_in, n) = array_out {
   shifted := array.concat(array_a, array_b)
   array_out := array.slice(shifted, 0, n)
 }
+
+add_n_values(array_in, elem, n) = array_out {
+  array_in[k] != elem
+  addedValues := n_shifted_values(array_in[k], n)
+  array_out := array.concat(cast_array(elem),addedValues)
+}
+
+orderChanged(array_old, array_new) {
+  array_old[i] == array_new[j]; i!=j
+}

@@ -115,3 +115,15 @@ patch["default_instance_type"] = mutation {
         {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
     ]
 }
+
+# On update we need to keep the order of AZs
+deny[msg] {
+    functions.is_update
+    input.request.kind.kind = "AWSControlPlane"
+    newAZ = input.request.object.spec.availabilityZones
+    oldAZ = input.request.oldObject.spec.availabilityZones
+    is_array(oldAZ)
+    is_array(newAZ)
+    functions.orderChanged(oldAZ, newAZ)
+    msg = "Can not change the order of availability zones."
+}
