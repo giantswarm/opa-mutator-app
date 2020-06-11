@@ -7,7 +7,7 @@ metadata:
   name: {{ template "opa.fullname" . }}
   annotations:
 {{- if .Values.certManager.enabled }}
-    certmanager.k8s.io/inject-ca-from: {{ printf "%s/%s" .Release.Namespace (include "opa.rootCACertificate" .) | quote }}
+    cert-manager.io/inject-ca-from: {{ printf "%s/%s" .Release.Namespace (include "opa.rootCACertificate" .) | quote }}
 {{- end }}
   labels:
 {{ include "opa.labels.standard" . | indent 4 }}
