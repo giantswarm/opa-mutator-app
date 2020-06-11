@@ -23,12 +23,13 @@ deny[msg] {
     msg = "Invalid choice of Master Node Instance Type"
 }
 
-
-# User has selected the same availability zone twice
+# User has selected the same availability zone twice. this should only be possible
+# in regions with limited AZs
 deny[msg] {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     az = input.request.object.spec.availabilityZones
+    not vars.isLimitedAZRegion
     is_array(az)
     functions.array_not_unique(az)
     msg = "The same Master Node Availability Zone can not be selected more than once"

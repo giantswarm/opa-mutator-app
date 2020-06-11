@@ -36,3 +36,7 @@ is_preHA_nodepool_version {
   functions.hasLabelValue[["release.giantswarm.io/version", preHANodepools[_]]]	
 }
 
+# Returns whether the installation has less available AZs than possible Master replicas
+isLimitedAZRegion {
+  count(validAZs)<max(validReplicas)
+}
