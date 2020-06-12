@@ -9,7 +9,7 @@ opa: false
 
 # Setup the webhook using cert-manager
 certManager:
-  enabled: false
+  enabled: true
 
 # Expose the prometheus scraping endpoint
 prometheus:
