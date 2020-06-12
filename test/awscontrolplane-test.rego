@@ -68,7 +68,7 @@ test_create_valid_awscontrolplanehanull {
 
     count(deny) = 0
     count(applied_patches) = 1
-    # contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1a\", \"eu-central-1b\", \"eu-central-1c\"]}")
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1a\", \"eu-central-1b\", \"eu-central-1c\"]}")
 }
 
 # Check single AZ AWSControlplane against existing G8SControlPlane
@@ -128,4 +128,14 @@ test_create_valid_awscontrolplane_update {
     deny = admission.deny with input as mocks.create_valid_awscontrolplane_update
     contains(deny[_], "Can not change the order of availability zones.")
     count(deny) = 1
+}
+
+# Check if the AZs are sorted
+test_create_valid_awscontrolplane_sort {
+    deny = admission.deny with input as mocks.create_valid_awscontrolplane_sort
+    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_sort
+
+    count(deny) = 0
+    count(applied_patches) = 1
+    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"replace\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1a\", \"eu-central-1b\", \"eu-central-1c\"]}")
 }

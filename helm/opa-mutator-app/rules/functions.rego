@@ -111,7 +111,8 @@ n_shifted_values(array_in, n) = array_out {
   # Masters in one AZ. However, this should be changed to something dynamic
   doubled:= array.concat(shifted, shifted)
   quadrupled:= array.concat(doubled, doubled)
-  array_out := array.slice(quadrupled, 0, n)
+  sliced := array.slice(quadrupled, 0, n)
+  array_out := sort(sliced)
 }
 
 add_n_values(array_in, elem, n) = array_out {

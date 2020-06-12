@@ -128,3 +128,15 @@ deny[msg] {
     functions.orderChanged(oldAZ, newAZ)
     msg = "Can not change the order of availability zones."
 }
+
+# On create we want to make sure that the AZs are sorted alphabetically
+patch["sort_az"] = mutation {
+    functions.is_create
+    input.request.kind.kind = "AWSControlPlane"
+    az = input.request.object.spec.availabilityZones
+    is_array(az)
+    sort(az)!=az
+    mutation := [
+        {"op": "replace", "path": "/spec/availabilityZones", "value": sort(az)},
+    ]
+}
