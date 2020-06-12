@@ -27,6 +27,7 @@ Validation rules:
     - Check instanceType is valid
     - Default availabilityZone if not defined
     - Default instanceType if not defined
+    - Sort availabilityZones if they are not sorted on creation
 
 - g8scontrolplanes
     - Check replicas is 1 or 3
