@@ -7,8 +7,6 @@
 # needs to include the opa config yaml, eg:
 opa: false
 
-fullnameOverride: opa-mutator-app
-
 # Setup the webhook using cert-manager
 certManager:
   enabled: true
