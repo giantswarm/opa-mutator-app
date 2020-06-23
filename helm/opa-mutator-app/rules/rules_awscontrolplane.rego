@@ -50,9 +50,10 @@ deny[msg] {
     functions.is_create
     input.request.kind.kind = "AWSControlPlane"
     az = input.request.object.spec.availabilityZones
-    input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
+    functions.existsG8SControlPlane
+    g8scp = functions.getG8SControlPlane
     functions.is_defined(az)
-    data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas != count(az)
+    g8scp.spec.replicas != count(az)
     msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
 
@@ -61,7 +62,7 @@ patch["default_az"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
-    not data.kubernetes.g8scontrolplanes[input.request.namespace][input.request.name]
+    not functions.existsG8SControlPlane
     not vars.is_preHA_nodepool_version
     mutation := [
         {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, vars.defaultReplicas)},
@@ -73,10 +74,11 @@ patch["default_az_withg8s"] = mutation {
     functions.is_create_or_update
     input.request.kind.kind = "AWSControlPlane"
     functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
-    input.request.name = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.name
+    functions.existsG8SControlPlane
+    g8scp = functions.getG8SControlPlane
     not vars.is_preHA_nodepool_version
     mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, data.kubernetes.g8scontrolplanes[input.request.namespace][n].spec.replicas)},
+        {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, g8scp.spec.replicas)},
     ]
 }
 
@@ -86,10 +88,10 @@ patch["default_az_preHA"] = mutation {
     input.request.kind.kind = "AWSControlPlane"
     functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
     vars.is_preHA_nodepool_version
-    functions.hasLabel["giantswarm.io/cluster"]
-    input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
+    functions.existsAWSCluster
+    awscl = functions.getAWSCluster
     mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": [data.kubernetes.awsclusters[input.request.namespace][n].spec.provider.master.availabilityZone]},
+        {"op": "add", "path": "/spec/availabilityZones", "value": [awscl.spec.provider.master.availabilityZone]},
     ]
 }
 
@@ -99,10 +101,10 @@ patch["default_instancetype_preHA"] = mutation {
     input.request.kind.kind = "AWSControlPlane"
     functions.is_null_or_empty_attribute(input.request.object.spec, "instanceType")
     vars.is_preHA_nodepool_version
-    functions.hasLabel["giantswarm.io/cluster"]
-    input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.name
+    functions.existsAWSCluster
+    awscl = functions.getAWSCluster
     mutation := [
-        {"op": "add", "path": "/spec/instanceType", "value": data.kubernetes.awsclusters[input.request.namespace][n].spec.provider.master.instanceType},
+        {"op": "add", "path": "/spec/instanceType", "value": awscl.spec.provider.master.instanceType},
     ]
 }
 

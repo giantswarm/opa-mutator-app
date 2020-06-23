@@ -124,3 +124,36 @@ add_n_values(array_in, elem, n) = array_out {
 orderChanged(array_old, array_new) {
    array_old[i] == array_new[j]; array_old[i] != array_new[i]
 }
+
+getAWSCluster = awscl {
+  hasLabel["giantswarm.io/cluster"]
+  input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][n].metadata.labels["giantswarm.io/cluster"]
+  awscl = data.kubernetes.awsclusters[input.request.namespace][n]
+}
+
+getAWSControlPlane = awscp {
+  hasLabel["giantswarm.io/cluster"]
+  input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awscontrolplanes[input.request.namespace][n].metadata.labels["giantswarm.io/cluster"]
+  awscp = data.kubernetes.awscontrolplanes[input.request.namespace][n]
+}
+
+getG8SControlPlane = g8scp {
+  hasLabel["giantswarm.io/cluster"]
+  input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.g8scontrolplanes[input.request.namespace][n].metadata.labels["giantswarm.io/cluster"]
+  g8scp = data.kubernetes.g8scontrolplanes[input.request.namespace][n]
+}
+
+existsAWSCluster {
+  hasLabel["giantswarm.io/cluster"]
+  input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awsclusters[input.request.namespace][_].metadata.labels["giantswarm.io/cluster"]
+}
+
+existsAWSControlPlane {
+  hasLabel["giantswarm.io/cluster"]
+  input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.awscontrolplanes[input.request.namespace][_].metadata.labels["giantswarm.io/cluster"]
+}
+
+existsG8SControlPlane {
+  hasLabel["giantswarm.io/cluster"]
+  input.request.object.metadata.labels["giantswarm.io/cluster"] = data.kubernetes.g8scontrolplanes[input.request.namespace][_].metadata.labels["giantswarm.io/cluster"]
+}

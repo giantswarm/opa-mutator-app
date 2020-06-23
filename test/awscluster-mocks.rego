@@ -9,6 +9,9 @@ mocked_awsclusters = {
                "annotations": {
                      "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
                   },
+               "labels": {
+                  "giantswarm.io/cluster": "2pm8s"
+               },
                "creationTimestamp": null,
                "name": "2pm8s",
                "namespace": "default"

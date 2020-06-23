@@ -9,6 +9,9 @@ mocked_awscontrolplanes = {
                "annotations": {
                      "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
                   },
+               "labels": {
+                  "giantswarm.io/cluster": "sicp1"
+               },
                "creationTimestamp": null,
                "name": "sicp1",
                "namespace": "default"
@@ -26,6 +29,9 @@ mocked_awscontrolplanes = {
             "metadata": {
             "annotations": {
                   "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+               },
+            "labels": {
+                  "giantswarm.io/cluster": "hacp1"
                },
                "creationTimestamp": null,
                "name": "hacp1",
@@ -51,6 +57,9 @@ mocked_awscontrolplanes_fail = {
          "metadata": {
          "annotations": {
                "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+            },
+         "labels": {
+               "giantswarm.io/cluster": "hacp1"
             },
             "creationTimestamp": null,
             "name": "hacp1",
@@ -107,6 +116,9 @@ create_invalid_awscontrolplane = {
         "metadata": {
           "annotations": {
             "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+          },
+          "labels": {
+            "giantswarm.io/cluster": "ier2s"
           },
           "creationTimestamp": null,
           "name": "ier2s"
@@ -168,6 +180,9 @@ create_duplicate_awscontrolplane = {
          "metadata": {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+           },
+           "labels": {
+             "giantswarm.io/cluster": "ier2s"
            },
            "creationTimestamp": null,
            "name": "ier2s"
@@ -232,6 +247,9 @@ create_invalid_count_awscontrolplane = {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
            },
+           "labels": {
+             "giantswarm.io/cluster": "ier2s"
+           },
            "creationTimestamp": null,
            "name": "ier2s"
          },
@@ -294,11 +312,16 @@ create_valid_awscontrolplane_single = {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
            },
+           "labels": {
+             "giantswarm.io/cluster": "sicp1"
+           },
            "creationTimestamp": null,
            "name": "sicp1"
          },
          "spec": {
-           "availabilityZones": 1,
+           "availabilityZones": [
+             "eu-central-1a"
+           ],
            "instanceType": "m4.xlarge"
          }
       },
@@ -352,6 +375,9 @@ create_valid_awscontrolplane_singlenull = {
          "metadata": {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+           },
+           "labels": {
+             "giantswarm.io/cluster": "sicp1"
            },
            "creationTimestamp": null,
            "name": "sicp1"
@@ -412,6 +438,9 @@ create_valid_awscontrolplane_singlenoaz = {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
            },
+           "labels": {
+             "giantswarm.io/cluster": "sicp1"
+           },
            "creationTimestamp": null,
            "name": "sicp1"
          },
@@ -469,6 +498,9 @@ create_valid_awscontrolplane_hanull = {
          "metadata": {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+           },
+           "labels": {
+             "giantswarm.io/cluster": "hacp1"
            },
            "creationTimestamp": null,
            "name": "hacp1"
@@ -528,6 +560,9 @@ create_valid_awscontrolplane_ha = {
          "metadata": {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+           },
+           "labels": {
+             "giantswarm.io/cluster": "hacp1"
            },
            "creationTimestamp": null,
            "name": "hacp1"
@@ -592,6 +627,9 @@ create_invalid_instancetype_awscontrolplane = {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
            },
+           "labels": {
+             "giantswarm.io/cluster": "sicp1"
+           },
            "creationTimestamp": null,
            "name": "sicp1"
          },
@@ -650,6 +688,9 @@ create_valid_awscontrolplane_instancenull = {
          "metadata": {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+           },
+           "labels": {
+             "giantswarm.io/cluster": "sicp1"
            },
            "creationTimestamp": null,
            "name": "sicp1"
@@ -777,6 +818,9 @@ create_valid_awscontrolplane_update = {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
            },
+           "labels": {
+             "giantswarm.io/cluster": "hacp1"
+           },
            "creationTimestamp": null,
            "name": "hacp1"
          },
@@ -795,6 +839,9 @@ create_valid_awscontrolplane_update = {
          "metadata": {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+           },
+           "labels": {
+             "giantswarm.io/cluster": "hacp1"
            },
            "creationTimestamp": null,
            "name": "hacp1"
@@ -857,6 +904,9 @@ create_valid_awscontrolplane_sort = {
          "metadata": {
            "annotations": {
              "giantswarm.io/docs": "https://docs.giantswarm.io/reference/cp-k8s-api/"
+           },
+           "labels": {
+             "giantswarm.io/cluster": "hacp1"
            },
            "creationTimestamp": null,
            "name": "hacp1"
