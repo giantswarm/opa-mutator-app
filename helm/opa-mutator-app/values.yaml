@@ -54,7 +54,7 @@ admissionControllerNamespaceSelector:
     - {key: openpolicyagent.org/webhook, operator: NotIn, values: [ignore]}
 
 # SideEffectClass for the webhook, setting to None enables dry-run
-admissionControllerSideEffect: Unknown
+admissionControllerSideEffect: None
 
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
