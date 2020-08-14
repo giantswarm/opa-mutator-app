@@ -25,14 +25,10 @@ Validation rules:
     - Check availabilityZones count is the same as defined in g8scontrolplanes
     - Check availabilityZones order is not changed on update
     - Check instanceType is valid
-    - Default availabilityZone if not defined
-    - Default instanceType if not defined
-    - Sort availabilityZones if they are not sorted on creation
 
 - g8scontrolplanes
     - Check replicas is 1 or 3
     - Check replicas is the length of availabilityZones defined in awscontrolplanes
-    - Default replicas if not defined
 
 ## Rendering the helm template locally
 `helm template helm/opa-mutator-app -f opa_values.yaml`

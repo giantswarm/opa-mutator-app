@@ -57,68 +57,6 @@ deny[msg] {
     msg = "Number of Availability Zones different than defined in G8SControlPlane"
 }
 
-# Defaulting: user has not selected any AZs and there is no G8sControlPlane that has to be matched
-patch["default_az"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
-    not functions.existsG8SControlPlane
-    not vars.is_preHA_nodepool_version
-    mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, vars.defaultReplicas)},
-    ]
-}
-
-# Defaulting: User has not selected any AZs but there is a G8sControlPlane that has to be matched
-patch["default_az_withg8s"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
-    functions.existsG8SControlPlane
-    g8scp = functions.getG8SControlPlane
-    not vars.is_preHA_nodepool_version
-    mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": functions.n_shifted_values(vars.validAZs, g8scp.spec.replicas)},
-    ]
-}
-
-# Defaulting: User has not selected any AZ, its a pre HA version and an awscluster exists
-patch["default_az_preHA"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    functions.is_null_or_empty_attribute(input.request.object.spec, "availabilityZones")
-    vars.is_preHA_nodepool_version
-    functions.existsAWSCluster
-    awscl = functions.getAWSCluster
-    mutation := [
-        {"op": "add", "path": "/spec/availabilityZones", "value": [awscl.spec.provider.master.availabilityZone]},
-    ]
-}
-
-# Defaulting: User has not selected any instance type, its a pre HA version and an awscluster exists
-patch["default_instancetype_preHA"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    functions.is_null_or_empty_attribute(input.request.object.spec, "instanceType")
-    vars.is_preHA_nodepool_version
-    functions.existsAWSCluster
-    awscl = functions.getAWSCluster
-    mutation := [
-        {"op": "add", "path": "/spec/instanceType", "value": awscl.spec.provider.master.instanceType},
-    ]
-}
-
-# Defaulting: user has not selected any master node instance type
-patch["default_instance_type"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSControlPlane"
-    functions.is_null_or_empty_attribute(input.request.object.spec, "instanceType")
-    not vars.is_preHA_nodepool_version
-    mutation := [
-        {"op": "add", "path": "/spec/instanceType", "value": vars.defaultInstanceType},
-    ]
-}
-
 # On update we need to keep the order of AZs
 deny[msg] {
     functions.is_update
@@ -131,14 +69,3 @@ deny[msg] {
     msg = "Can not change the order of availability zones."
 }
 
-# On create we want to make sure that the AZs are sorted alphabetically
-patch["sort_az"] = mutation {
-    functions.is_create
-    input.request.kind.kind = "AWSControlPlane"
-    az = input.request.object.spec.availabilityZones
-    is_array(az)
-    sort(az)!=az
-    mutation := [
-        {"op": "replace", "path": "/spec/availabilityZones", "value": sort(az)},
-    ]
-}

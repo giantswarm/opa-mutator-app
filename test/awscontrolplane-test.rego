@@ -18,16 +18,6 @@ test_create_invalid_instancetype_awscontrolplane {
     count(deny) = 1
 }
 
-# defaulting the instance type if it is null
-test_create_valid_awscontrolplane_instancenull {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_instancenull
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_instancenull
-
-    count(deny) = 0
-    count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/instanceType\", \"value\": \"m5.xlarge\"}")
-}
-
 # a selection of AZs containing a duplicate
 test_create_duplicate_awscontrolplane {
     deny = admission.deny with input as mocks.create_duplicate_awscontrolplane
@@ -51,60 +41,12 @@ test_create_valid_awscontrolplane {
     count(applied_patches) = 0
 }
 
-# Patch AWS ControlPlane Single with existing G8SControlPlane
-test_create_valid_awscontrolplanenull {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_singlenull
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_singlenull
-
-    count(deny) = 0
-    count(applied_patches) = 1
-    # contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1a\"]}")
-}
-
-# Patch AWS ControlPlane HA with existing G8SControlPlane
-test_create_valid_awscontrolplanehanull {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_hanull  with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_hanull  with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
-
-    count(deny) = 0
-    count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1a\", \"eu-central-1b\", \"eu-central-1c\"]}")
-}
-
 # Check single AZ AWSControlplane against existing G8SControlPlane
 test_create_valid_awscontrolplane_checkg8ssi {
     deny = admission.deny with input as mocks.create_valid_awscontrolplane_single with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
     applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_single  with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
 
     count(deny) = 0
-}
-
-# Check single AZ AWSControlplane against existing G8SControlPlane with defaulting
-test_create_valid_awscontrolplane_checkg8ssinull {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_singlenull with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_singlenull  with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
-
-    count(applied_patches) = 1
-    count(deny) = 0
-}
-
-test_create_valid_awscontrolplane_checkg8ssino {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_singlenoaz with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_singlenoaz  with data.kubernetes.g8scontrolplanes as mocks.mocked_g8scontrolplanes
-
-    count(applied_patches) = 1
-    count(deny) = 0
-}
-
-# Check pre HA AWSControlplane against existing AWSCluster with defaulting
-test_create_valid_awscontrolplane_preha {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_preha with data.kubernetes.awsclusters as mocks.mocked_awsclusters
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_preha  with data.kubernetes.awsclusters as mocks.mocked_awsclusters
-
-    count(applied_patches) = 2
-    count(deny) = 0
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1c\"]}")
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"add\", \"path\": \"/spec/instanceType\", \"value\": \"m5.xlarge\"}")
 }
 
 # Check HA AWSControlplane against existing G8SControlPlane
@@ -128,14 +70,4 @@ test_create_valid_awscontrolplane_update {
     deny = admission.deny with input as mocks.create_valid_awscontrolplane_update
     contains(deny[_], "Can not change the order of availability zones.")
     count(deny) = 1
-}
-
-# Check if the AZs are sorted
-test_create_valid_awscontrolplane_sort {
-    deny = admission.deny with input as mocks.create_valid_awscontrolplane_sort
-    applied_patches = admission.patch with input as mocks.create_valid_awscontrolplane_sort
-
-    count(deny) = 0
-    count(applied_patches) = 1
-    contains(sprintf("%s",applied_patches[_]), "{\"op\": \"replace\", \"path\": \"/spec/availabilityZones\", \"value\": [\"eu-central-1a\", \"eu-central-1b\", \"eu-central-1c\"]}")
 }
