@@ -1,0 +1,21 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ template "opa.fullname" . }}
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "opa.fullname" . }}
+  ingress:
+  - ports:
+    - port: {{ .Values.port }}
+      protocol: TCP
+    - port: 8181
+      protocol: TCP
+  egress:
+  - {}
+  policyTypes:
+  - Egress
+  - Ingress

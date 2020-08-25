@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+  name: {{ template "opa.fullname" . }}-psp
+  labels:
+{{ include "opa.labels.standard" . | indent 4 }}
+rules:
+- apiGroups:
+  - extensions
+  resourceNames:
+  - {{ template "opa.fullname" . }}-psp
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
