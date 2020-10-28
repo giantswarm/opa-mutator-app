@@ -63,7 +63,7 @@ admissionControllerRules:
   - operations: ["CREATE", "UPDATE"]
     apiGroups: ["infrastructure.giantswarm.io"]
     apiVersions: ["v1alpha2"]
-    resources: ["awsclusters", "awscontrolplanes", "g8scontrolplanes"]
+    resources: ["awsclusters"]
 
 # Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
 # always running for admission control is important
@@ -115,8 +115,6 @@ mgmt:
     cluster: []
     namespace:
       - infrastructure.giantswarm.io/v1alpha2/awsclusters
-      - infrastructure.giantswarm.io/v1alpha2/awscontrolplanes
-      - infrastructure.giantswarm.io/v1alpha2/g8scontrolplanes
     path: kubernetes
 
 # Log level for OPA ('debug', 'info', 'error') (app default=info)
@@ -186,8 +184,6 @@ rbac:
         - "infrastructure.giantswarm.io"
       resources:
         - awsclusters
-        - awscontrolplanes
-        - g8scontrolplanes
       verbs:
         - get
         - list

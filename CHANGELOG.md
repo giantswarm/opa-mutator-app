@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Move all validating and defaulting rules except for pre-HA `awscluster` CRs to `aws-admission-controller`
+
 ## [1.2.0] - 2020-08-25
 
 ### Added

@@ -1,5 +1,9 @@
 [![CircleCI](https://circleci.com/gh/giantswarm/opa-mutator-app.svg?style=svg)](https://circleci.com/gh/giantswarm/opa-mutator-app)
 
+# DEPRECATION NOTICE
+
+Please note that we do not want to add further functionality to this repository. `opa-mutator-app` will be deprecated as soon as GS releases 11.x.x < 11.4.0 are archived and we do not create new clusters with them anymore. For validating and defaulting webhooks in AWS please use [aws-admission-controller](https://github.com/giantswarm/aws-admission-controller)
+
 # OPA for Giant Swarm
 [Open Policy Agent](https://www.openpolicyagent.org/) app running on installations to validate and mutate Giant Swarm kubernetes resources using webhooks.
 
@@ -16,19 +20,6 @@ Validation rules:
     - Check instanceType is valid
     - Default availabilityZone if not defined
     - Default instanceType if not defined
-    - Default pods cidrBlock if not defined
-
-- awscontrolplanes
-    - Check availabilityZones are valid
-    - Check availabilityZones are unique
-    - Check availabilityZones count is 1 or 3
-    - Check availabilityZones count is the same as defined in g8scontrolplanes
-    - Check availabilityZones order is not changed on update
-    - Check instanceType is valid
-
-- g8scontrolplanes
-    - Check replicas is 1 or 3
-    - Check replicas is the length of availabilityZones defined in awscontrolplanes
 
 ## Rendering the helm template locally
 `helm template helm/opa-mutator-app -f opa_values.yaml`

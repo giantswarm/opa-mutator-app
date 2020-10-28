@@ -51,13 +51,3 @@ patch["default_az"] = mutation {
         {"op": "add", "path": "/spec/provider/master/availabilityZone", "value": functions.random_value(vars.validAZs)},
     ]
 }
-
-# Defaulting: user has not selected any pod cidr
-patch["default_cidr"] = mutation {
-    functions.is_create_or_update
-    input.request.kind.kind = "AWSCluster"
-    functions.is_null_or_empty_attribute(input.request.object.spec.provider.pods, "cidrBlock")
-    mutation := [
-        {"op": "add", "path": "/spec/provider/pods/cidrBlock", "value": sprintf("%s/%s", [vars.defaultSubnet, vars.defaultCIDR]) },
-    ]
-}
