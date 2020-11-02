@@ -39,7 +39,7 @@ webhooks:
 {{ if .Values.certManager.enabled }}
 ---
 # Generate a CA Certificate used to sign certificates for the webhook
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ include "opa.rootCACertificate" . }}
@@ -55,7 +55,7 @@ spec:
   isCA: true
 ---
 # Create an Issuer that uses the above generated CA certificate to issue certs
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: {{ include "opa.rootCAIssuer" . }}
