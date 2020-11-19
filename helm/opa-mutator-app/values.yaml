@@ -59,11 +59,7 @@ admissionControllerSideEffect: None
 # To restrict the kinds of operations and resources that are subject to OPA
 # policy checks, see the settings below. By default, all resources and
 # operations are subject to OPA policy checks.
-admissionControllerRules:
-  - operations: ["CREATE", "UPDATE"]
-    apiGroups: ["infrastructure.giantswarm.io"]
-    apiVersions: ["v1alpha2"]
-    resources: ["awsclusters"]
+
 
 # Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
 # always running for admission control is important
@@ -114,7 +110,6 @@ mgmt:
   replicate:
     cluster: []
     namespace:
-      - infrastructure.giantswarm.io/v1alpha2/awsclusters
     path: kubernetes
 
 # Log level for OPA ('debug', 'info', 'error') (app default=info)
@@ -176,14 +171,6 @@ rbac:
         - ""
       resources:
         - configmaps
-      verbs:
-        - get
-        - list
-        - watch
-    - apiGroups:
-        - "infrastructure.giantswarm.io"
-      resources:
-        - awsclusters
       verbs:
         - get
         - list

@@ -9,18 +9,6 @@ Please note that we do not want to add further functionality to this repository.
 
 ![OPA](./media/opa.png)
 
-The following objects will be intercepted by OPA in order to validate/mutate:
-- infrastructure.giantswarm.io/v1alpha2/awsclusters
-- infrastructure.giantswarm.io/v1alpha2/awscontrolplanes
-- infrastructure.giantswarm.io/v1alpha2/g8scontrolplanes
-
-Validation rules:
-- awsclusters
-    - Check availabilityZone is valid
-    - Check instanceType is valid
-    - Default availabilityZone if not defined
-    - Default instanceType if not defined
-
 ## Rendering the helm template locally
 `helm template helm/opa-mutator-app -f opa_values.yaml`
 
