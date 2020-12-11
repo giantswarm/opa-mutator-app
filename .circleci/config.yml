@@ -42,16 +42,3 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-opa-mutator-app-to-aws-app-collection
-          app_name: "opa-mutator-app"
-          app_collection_repo: "aws-app-collection"
-          unique: "true"
-          requires:
-            - push-opa-mutator-app-to-control-plane-app-catalog
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/

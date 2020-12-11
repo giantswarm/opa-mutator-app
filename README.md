@@ -2,7 +2,7 @@
 
 # DEPRECATION NOTICE
 
-Please note that we do not want to add further functionality to this repository. `opa-mutator-app` will be deprecated as soon as GS releases 11.x.x < 11.4.0 are archived and we do not create new clusters with them anymore. For validating and defaulting webhooks in AWS please use [aws-admission-controller](https://github.com/giantswarm/aws-admission-controller)
+Please note that `opa-mutator-app` is deprecated. For validating and defaulting webhooks in AWS please use [aws-admission-controller](https://github.com/giantswarm/aws-admission-controller)
 
 # OPA for Giant Swarm
 [Open Policy Agent](https://www.openpolicyagent.org/) app running on installations to validate and mutate Giant Swarm kubernetes resources using webhooks.
